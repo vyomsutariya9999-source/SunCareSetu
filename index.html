@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sun CareSetu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#3A2A20; --navy-2:#5A3A28; --saffron:#E8731A; --amber:#F0A35E; --sun:#F9C74F;
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#FBF8F2; --line:#E7E1D6; --line-2:#D9D1C3;
+  --ink:#1B2233; --ink-2:#4A5468; --ink-3:#7A8294;
+  --crit:#B42318; --crit-bg:#FDECEA; --warn:#A15C07; --warn-bg:#FEF4E6; --info:#9A5A1F; --info-bg:#FBF1E8; --ok:#1E7A4C; --ok-bg:#E7F5EE;
+  --accent-soft:#FDF0E4; --shadow:0 1px 2px rgba(20,33,61,.06),0 4px 16px rgba(20,33,61,.06);
+  --radius:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1524; --surface:#161E31; --surface-2:#1B2540; --line:#26324F; --line-2:#33416A;
+    --ink:#ECEFF6; --ink-2:#B7BFD1; --ink-3:#8790A6;
+    --crit:#FF8A80; --crit-bg:#3A1C1E; --warn:#F5B85C; --warn-bg:#3A2A14; --info:#8AB8F5; --info-bg:#172A47; --ok:#6FD3A0; --ok-bg:#143326;
+    --accent-soft:#33241A; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1524; --surface:#161E31; --surface-2:#1B2540; --line:#26324F; --line-2:#33416A;
+  --ink:#ECEFF6; --ink-2:#B7BFD1; --ink-3:#8790A6;
+  --crit:#FF8A80; --crit-bg:#3A1C1E; --warn:#F5B85C; --warn-bg:#3A2A14; --info:#8AB8F5; --info-bg:#172A47; --ok:#6FD3A0; --ok-bg:#143326;
+  --accent-soft:#33241A; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.hi{font-family:'Noto Sans Devanagari','IBM Plex Sans',sans-serif}
+
+/* shell */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.side{background:var(--navy);color:#E9ECF4;padding:20px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.brand{display:flex;gap:10px;align-items:center;padding:0 6px}
+.brand b{font-size:16px;letter-spacing:.2px;color:#fff}
+.brand small{display:block;font-size:11px;color:#8A7A70;font-weight:400}
+.home-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;font-size:12px;color:#5A4A40}
+.home-card strong{display:block;color:#fff;font-size:13px;margin-bottom:2px}
+.home-card .pill{margin-top:6px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{all:unset;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:#5A4A40;font-size:13.5px}
+.nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav button.on{background:rgba(232,115,26,.18);color:#fff;box-shadow:inset 3px 0 0 var(--saffron)}
+.nav svg{width:18px;height:18px;flex:none}
+.side .foot{margin-top:auto;font-size:11px;color:#9A8A80;line-height:1.5;padding:0 6px}
+.side .foot a{color:#F0A35E}
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 28px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:0;z-index:5}
+.topbar h1{font-size:17px;margin:0;font-weight:600}
+.topbar .sub{font-size:12px;color:var(--ink-3)}
+.tb-actions{display:flex;gap:8px;align-items:center}
+.content{padding:24px 28px 60px;max-width:1360px;width:100%}
+.proto{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--saffron);background:var(--accent-soft);border-radius:999px;padding:3px 9px;white-space:nowrap}
+
+/* buttons */
+.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:9px;padding:8px 14px;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--saffron);border-color:var(--saffron);color:#fff}
+.btn.primary:hover{background:#D5650F}
+.btn.navy{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{padding:5px 10px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn svg{width:16px;height:16px}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.card-h h3{margin:0;font-size:14.5px;font-weight:600}
+.card-b{padding:16px 18px}
+.muted{color:var(--ink-3)}
+.small{font-size:12px}
+.grid{display:grid;gap:16px}
+.kpis{grid-template-columns:repeat(6,minmax(0,1fr))}
+.kpi{padding:14px 16px}
+.kpi .v{font-size:26px;font-weight:600;letter-spacing:-.5px}
+.kpi .l{font-size:12px;color:var(--ink-3)}
+.kpi .d{font-size:11.5px;color:var(--ink-2);margin-top:2px}
+
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill.crit{background:var(--crit-bg);color:var(--crit)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.info{background:var(--info-bg);color:var(--info)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.neutral{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+
+/* table */
+table.q{width:100%;border-collapse:collapse}
+table.q th{text-align:left;font-size:11.5px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;border-bottom:1px solid var(--line)}
+table.q td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.q tr.row{cursor:pointer}
+table.q tr.row:hover td{background:var(--surface-2)}
+.pname{font-weight:600}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;width:90px}
+.bar>i{display:block;height:100%;background:var(--saffron);border-radius:6px}
+
+/* case workspace */
+.ws>*,.grid>*{min-width:0}
+.tablewrap{overflow-x:auto}
+.ws{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.case-head{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.case-head .who{display:flex;gap:14px;align-items:center}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--saffron);display:grid;place-items:center;font-weight:700}
+.case-head h2{margin:0;font-size:19px}
+.steps{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:thin}
+.step{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-size:13px;white-space:nowrap}
+.step .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:600;background:var(--surface-2);border:1px solid var(--line-2)}
+.step.on{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,115,26,.12)}
+.step.on .n{background:var(--saffron);border-color:var(--saffron);color:#fff}
+.step .badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;font-size:10.5px;font-weight:700;display:grid;place-items:center}
+.step .badge.crit{background:var(--crit);color:#fff}
+.step .badge.warn{background:var(--warn-bg);color:var(--warn)}
+.step .badge.ok{background:var(--ok-bg);color:var(--ok)}
+
+.form{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px 16px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:12px;font-weight:500;color:var(--ink-2)}
+.f .hint{font-size:11.5px;color:var(--ink-3)}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:span 12}.c2{grid-column:span 2}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=tel],select,textarea{width:100%;border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:8px 10px;outline:none;min-height:36px}
+textarea{resize:vertical;min-height:60px}
+input:focus,select:focus,textarea:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,115,26,.15)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{all:unset;cursor:pointer;padding:7px 12px;border:1px solid var(--line-2);border-radius:8px;font-size:13px;background:var(--surface)}
+.seg button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+:root[data-theme="dark"] .seg button.on{background:var(--saffron);border-color:var(--saffron)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button.on{background:var(--saffron);border-color:var(--saffron)}}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.chk{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;cursor:pointer;background:var(--surface);font-size:13px;user-select:none}
+.chk input{accent-color:var(--saffron);width:15px;height:15px;margin:0}
+.chk.on{border-color:var(--saffron);background:var(--accent-soft)}
+.section-t{grid-column:1/-1;font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-3);margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
+.section-t:first-child{border-top:0;padding-top:0;margin-top:0}
+.computed{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:36px;display:flex;align-items:center}
+.form-foot{display:flex;justify-content:space-between;margin-top:18px}
+
+/* meds */
+.med{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.med:last-of-type{border-bottom:0}
+.med .rec{font-size:11.5px;margin-top:5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.tag{font-size:11px;border-radius:5px;padding:1px 6px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.iconbtn{all:unset;cursor:pointer;width:32px;height:36px;display:grid;place-items:center;border-radius:8px;color:var(--ink-3)}
+.iconbtn:hover{background:var(--crit-bg);color:var(--crit)}
+
+/* AI panel */
+.ai{position:sticky;top:76px}
+.ai-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center}
+.ring{width:64px;height:64px;flex:none;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:15px}
+.ai-h .st{font-size:15px;font-weight:600}
+.ai-filter{display:flex;gap:6px;padding:10px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.ai-filter button{all:unset;cursor:pointer;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line)}
+.ai-filter button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.flags{max-height:calc(100vh - 290px);overflow:auto}
+.flag{padding:12px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:10px}
+.flag .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;font-weight:700;margin-top:1px}
+.flag.crit .ic{background:var(--crit-bg);color:var(--crit)}
+.flag.warn .ic{background:var(--warn-bg);color:var(--warn)}
+.flag.info .ic{background:var(--info-bg);color:var(--info)}
+.flag .t{font-weight:600;font-size:13.5px}
+.flag .d{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.flag .m{display:flex;gap:8px;align-items:center;margin-top:7px;flex-wrap:wrap}
+.flag .src{font-size:11px;color:var(--ink-3)}
+.flag.done{opacity:.6}
+.flag.done .t{text-decoration:line-through}
+.ov{font-size:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:6px 8px;margin-top:7px}
+.empty{padding:26px 18px;text-align:center;color:var(--ink-3)}
+.thinking{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3)}
+.thinking i{width:6px;height:6px;border-radius:50%;background:var(--saffron);animation:pulse 1s infinite}
+.thinking i:nth-child(2){animation-delay:.15s}.thinking i:nth-child(3){animation-delay:.3s}
+@keyframes pulse{0%,100%{opacity:.25}50%{opacity:1}}
+
+/* review */
+.rv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.req{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.req:last-child{border-bottom:0}
+.req .s{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:none}
+.req.y .s{background:var(--ok-bg);color:var(--ok)}
+.req.n .s{background:var(--crit-bg);color:var(--crit)}
+.brief{font-size:13.5px;line-height:1.6;white-space:pre-wrap}
+.pcard{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pcard .top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.pcard .top small{color:#5A4A40}
+.pcard ul{margin:0;padding:12px 16px 14px 32px}
+.pcard li{margin:4px 0}
+.wa{background:#E5DDD5;border-radius:12px;padding:14px;max-width:380px}
+:root[data-theme="dark"] .wa{background:#0B141A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wa{background:#0B141A}}
+.wa .msg{background:#fff;color:#111;border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 1px 1px rgba(0,0,0,.1);white-space:pre-wrap}
+:root[data-theme="dark"] .wa .msg{background:#202C33;color:#E9EDEF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .wa .msg{background:#202C33;color:#E9EDEF}}
+.wa .meta{font-size:10.5px;color:#667781;text-align:right;margin-top:4px}
+.audit{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-2)}
+.audit div{padding:5px 0;border-bottom:1px dashed var(--line)}
+
+/* chat */
+.chat{position:fixed;right:20px;bottom:20px;width:380px;max-width:calc(100vw - 32px);height:540px;max-height:calc(100vh - 40px);display:none;flex-direction:column;z-index:30}
+.chat.open{display:flex}
+.chat .card-h{background:var(--navy);color:#fff;border-radius:var(--radius) var(--radius) 0 0;border:0}
+.chat-b{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface-2)}
+.bub{max-width:88%;padding:9px 12px;border-radius:12px;font-size:13px;white-space:pre-wrap}
+.bub.me{align-self:flex-end;background:var(--saffron);color:#fff;border-bottom-right-radius:4px}
+.bub.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.sugs{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid var(--line);background:var(--surface)}
+.sugs button{all:unset;cursor:pointer;font-size:11.5px;border:1px solid var(--line-2);border-radius:999px;padding:3px 9px}
+.chat-in{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--line);background:var(--surface);border-radius:0 0 var(--radius) var(--radius)}
+.fab{position:fixed;right:20px;bottom:20px;z-index:29;border-radius:999px;padding:12px 18px;box-shadow:0 6px 20px rgba(232,115,26,.35)}
+
+.modal{position:fixed;inset:0;background:rgba(10,15,30,.45);display:none;place-items:center;z-index:40;padding:16px}
+.modal.open{display:grid}
+.modal .card{width:460px;max-width:100%}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.how h4{margin:0 0 6px;font-size:14px}
+.how p{margin:0;color:var(--ink-2);font-size:13px}
+.rulelist{columns:2;column-gap:28px;font-size:13px;margin:0;padding-left:18px}
+.rulelist li{margin:0 0 6px;break-inside:avoid}
+.issues .it{display:grid;grid-template-columns:120px 1fr 36px;gap:10px;align-items:center;padding:6px 0;font-size:13px}
+.issues .track{height:8px;background:var(--line);border-radius:6px;overflow:hidden}
+.issues .track i{display:block;height:100%;background:var(--navy);border-radius:6px}
+:root[data-theme="dark"] .issues .track i{background:var(--amber)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .issues .track i{background:var(--amber)}}
+
+@media (max-width:1180px){.ws{grid-template-columns:minmax(0,1fr)}.ai{position:static}.flags{max-height:none}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1180px){#todayGrid{grid-template-columns:1fr !important}}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side,.main{min-width:0}
+  .nav{min-width:0;flex:1 1 100%;scrollbar-width:none}
+  .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 16px;gap:10px}
+  .home-card,.side .foot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;width:100%}
+  .topbar{padding:12px 16px;position:static}
+  .content{padding:16px 16px 90px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .form{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .c2,.c3{grid-column:span 3}.c4,.c6,.c8{grid-column:span 6}.c12{grid-column:1/-1}
+  .rv,.how{grid-template-columns:1fr}
+  .rulelist{columns:1}
+  .med{grid-template-columns:1fr 1fr auto}
+  .med>div:first-child{grid-column:span 3}
+  table.q .hide-m{display:none}
+  table.q td,table.q th{padding:10px 8px}
+  .card-h{flex-wrap:wrap;gap:6px}
+  .proto,.lg-only{display:none}
+  .topbar h1{font-size:15px}
+  .topbar .sub{display:none}
+}
+
+/* ===== Sun CareSetu theme (orange + blue) ===== */
+:root{--navy:#C4500F;--saffron:#EE6A1F;--amber:#F7A541;--bg:#F5F6FA;--info:#D9601A;--accent-soft:#FDEBDD}
+.side{background:linear-gradient(180deg,#C4500F,#9A3A0B)}
+.nav button.on{background:rgba(247,165,65,.2);box-shadow:inset 3px 0 0 #F7A541}
+.topbar{background:linear-gradient(90deg,#E2531A 0%,#F28C28 60%,#F7B354 100%);border-bottom:0}
+.topbar h1{color:#fff;font-size:19px}.topbar .sub{color:#FFF1E2}
+.topbar .proto{background:#fff;color:#C4500F}.topbar .btn.ghost{color:#fff}
+.topbar .btn.primary{background:#C4500F;border-color:#C4500F}
+.card-h{background:linear-gradient(90deg,#E2531A,#F7A541);border-radius:var(--radius) var(--radius) 0 0;border-bottom:0}
+.card-h h3{color:#fff}.card-h .muted,.card-h .hsub{color:#FFEBD9 !important;font-weight:400}
+.card-h .btn{background:rgba(255,255,255,.92);border-color:transparent;color:#C4500F}
+.card-h .seg button{background:rgba(255,255,255,.9)}.card-h .seg button.on{background:#C4500F;color:#fff}
+.kpi{border-top:3px solid var(--saffron)}
+.kpi:nth-child(even){border-top-color:var(--info)}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#FFF4EA;border:1px solid #F6D3B6;color:#C4500F;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:13px}
+.sublbl{font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#C4500F;margin:6px 0}
+.task{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;margin-bottom:5px;background:var(--surface-2);border-left:3px solid var(--line-2);font-size:13px}
+.task.crit{border-left-color:var(--crit);background:var(--crit-bg)}.task.warn{border-left-color:var(--warn);background:var(--warn-bg)}.task.info{border-left-color:var(--info)}
+.task.done{opacity:.55}.task.done .tt{text-decoration:line-through}.task .tt{flex:1}.task .due{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.task input{accent-color:var(--saffron)}
+.note{display:none;white-space:pre-wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;background:#FFF8F1;border:1px dashed #F1C9A8;border-radius:8px;padding:10px;margin-top:10px}.note.show{display:block}
+.mini{font-size:12.5px;padding:6px 9px;border-radius:7px;margin:4px 0}.mini.ok{background:var(--ok-bg);color:var(--ok)}.mini.warn{background:var(--warn-bg);color:var(--warn)}.mini.crit{background:var(--crit-bg);color:var(--crit)}.mini.info{background:var(--info-bg);color:var(--info)}
+table.q.mt th{background:#D9601A;color:#fff;border:0}table.q.mt td{padding:7px 10px}
+.cp3{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;gap:16px;align-items:start}
+.qrow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}.qrow:hover{background:var(--surface-2)}.qrow.on{background:#FFF4EA;box-shadow:inset 3px 0 0 var(--saffron)}
+.tl{display:flex;justify-content:space-between;position:relative;margin:4px 6px 0}.tl:before{content:"";position:absolute;left:8px;right:8px;top:7px;height:2px;background:var(--line-2)}
+.tl-i{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:11.5px;color:var(--ink-3)}.tl-i i{width:16px;height:16px;border-radius:50%;background:var(--surface);border:2px solid var(--line-2)}
+.tl-i.done i{background:var(--ok);border-color:var(--ok)}.tl-i.now i{background:var(--saffron);border-color:var(--saffron);box-shadow:0 0 0 4px rgba(238,106,31,.2)}.tl-i.now span{color:var(--saffron);font-weight:700}
+.wa-card{overflow:hidden}.wa-body{background:#E9DFD5;height:360px;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.wm{flex:none;max-width:85%;padding:7px 10px;border-radius:9px;font-size:13px;white-space:pre-wrap;box-shadow:0 1px 1px rgba(0,0,0,.1)}.wm.bot{background:#fff;align-self:flex-start}.wm.me{background:#D9FDD3;align-self:flex-end}
+.bars{display:flex;align-items:flex-end;gap:12px;height:170px;padding-top:18px}.bc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.bc i{width:70%;max-width:46px;border-radius:5px 5px 0 0;min-height:3px}.bv{font-size:12px;font-weight:700}.bl{font-size:11.5px;color:var(--ink-3)}
+.nrow{display:grid;grid-template-columns:44px 1fr 120px 40px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}.nrow b{color:#D9601A}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(110deg,#C4500F 0%,#D9601A 60%,#F7A541 100%);color:#fff;border-radius:14px;padding:22px 26px;margin-bottom:16px}
+.hero h2{margin:4px 0 6px;font-size:24px}.hero p{margin:0;color:#FFF1E2;max-width:760px}.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#F7B354}
+.hero-n{text-align:center;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 20px}.hero-n b{display:block;font-size:34px;color:#F7B354}.hero-n span{font-size:12px;color:#FFF1E2}
+.journey{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.stage{position:relative;cursor:pointer;background:linear-gradient(135deg,#FFF6EE,#FDE3CC);padding:14px 30px 14px 34px;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 50%,calc(100% - 20px) 100%,0 100%,20px 50%);margin-right:-12px;transition:transform .15s}
+.stage:first-child{clip-path:polygon(0 0,calc(100% - 20px) 0,100% 50%,calc(100% - 20px) 100%,0 100%);padding-left:18px}.stage:hover{transform:translateY(-2px)}
+.stage:nth-child(2){background:linear-gradient(135deg,#FDE3CC,#F9C79D)}.stage:nth-child(3){background:linear-gradient(135deg,#F9C79D,#F4A66B)}.stage:nth-child(4){background:linear-gradient(135deg,#F28C28,#E2531A);color:#fff}.stage:nth-child(5){background:linear-gradient(135deg,#D9601A,#C4500F);color:#fff}
+.si svg{width:22px;height:22px}.sn{font-size:26px;font-weight:700;line-height:1.1;margin-top:4px}.st{font-weight:600}.ss{font-size:12px;opacity:.85}
+.stage.alert .ss{font-weight:700;color:#B42318}.stage:nth-child(4).alert .ss{color:#fff}
+.brow{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13.5px}.brow:hover{background:var(--surface-2)}.brow .go{margin-left:auto;color:var(--saffron);font-weight:600;white-space:nowrap;font-size:12.5px}
+.bdot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--info)}.brow.crit .bdot{background:var(--crit)}.brow.warn .bdot{background:var(--warn)}.brow.ok .bdot{background:var(--ok)}
+.ailist div{display:flex;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}.ailist b{width:86px;flex:none;color:#C4500F}
+@media (max-width:1280px){.cp3{grid-template-columns:1fr 1fr}.cp3 .wa-card{grid-column:span 2}}
+@media (max-width:1100px){#homeGrid{grid-template-columns:1fr !important}}
+@media (max-width:860px){.cp3{grid-template-columns:1fr}.cp3 .wa-card{grid-column:auto}.journey{grid-template-columns:1fr}.stage,.stage:first-child{clip-path:none;margin:0 0 6px;border-radius:10px;padding:12px 16px}.hero{flex-direction:column;align-items:flex-start}.nrow{grid-template-columns:40px 1fr 70px 36px}}
+
+/* ===== white + orange (no blue) ===== */
+:root{--bg:#FFFFFF;--surface:#FFFFFF;--surface-2:#FFF8F2;--line:#F2E4D8;--line-2:#E8D0BC;--ink:#2B2522;--ink-2:#5C4F47;--ink-3:#8E8079;--info:#9A5A1F;--info-bg:#FBF1E8}
+body{background:#fff}
+.side{background:#fff;color:#3A2A20;border-right:1px solid #F2E4D8}
+.brand b{color:#2B2522}.brand small{color:#8E8079}
+.home-card{background:#FFF7F0;border:1px solid #F6D9C2;color:#5C4F47}.home-card strong{color:#2B2522}
+.nav button{color:#5C4F47}.nav button:hover{background:#FFF3E8;color:#C4500F}
+.nav button.on{background:#FFEBDB;color:#C4500F;box-shadow:inset 3px 0 0 #EE6A1F}
+.side .foot{color:#9A8A80}
+.topbar .btn.primary{background:#fff;border-color:#fff;color:#C4500F}
+.btn.navy{background:#C4500F;border-color:#C4500F}
+.seg button.on{background:#EE6A1F;border-color:#EE6A1F;color:#fff}
+.pcard .top{background:linear-gradient(90deg,#E2531A,#F7A541)}
+.issues .track i{background:#EE6A1F}
+.hero{background:linear-gradient(110deg,#C4500F 0%,#EE6A1F 55%,#F7A541 100%)}
+.hero .eyebrow{color:#FFE7CF}.hero p{color:#FFF4EA}.hero-n{background:rgba(255,255,255,.18)}.hero-n b{color:#fff}.hero-n span{color:#FFF1E2}
+.stage:nth-child(5){background:linear-gradient(135deg,#C4500F,#9A3A0B)}
+.card{border-color:#F2E4D8;box-shadow:0 1px 2px rgba(120,60,20,.05),0 4px 14px rgba(120,60,20,.06)}
+.kpi:nth-child(even){border-top-color:#F7A541}
+.chk.on{background:#FFF3E8}
+.ring svg circle:first-child{stroke:#F2E4D8}
+
+/* ===== clearer top bar ===== */
+.topbar{padding:12px 24px;gap:16px}
+.tb-actions{gap:10px}
+.tb-search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.95);border-radius:9px;padding:0 10px;height:36px;width:270px;color:#8E8079}
+.tb-search svg{width:16px;height:16px;flex:none}.tb-search input{border:0;outline:0;background:transparent;width:100%;min-height:34px;padding:0;font-size:13px;color:#2B2522}
+.tb-date{color:#fff;font-size:12.5px;font-weight:500;white-space:nowrap;opacity:.95}
+.tb-bell{all:unset;cursor:pointer;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:9px;height:34px;padding:0 10px;font-size:12.5px;font-weight:600}
+.tb-bell svg{width:16px;height:16px}.tb-bell b{background:#fff;color:#B42318;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;font-size:11px;padding:0 5px}
+.tb-bell:hover{background:rgba(255,255,255,.28)}
+.tb-user{display:flex;align-items:center;gap:8px;color:#fff;padding-left:6px;border-left:1px solid rgba(255,255,255,.35)}
+.tb-user .av{width:32px;height:32px;border-radius:50%;background:#fff;color:#C4500F;display:grid;place-items:center;font-weight:700;font-size:12px}
+.tb-user b{display:block;font-size:12.5px;line-height:1.1}.tb-user small{font-size:11px;opacity:.9}
+.srch-hit{outline:2px solid #EE6A1F;outline-offset:2px;border-radius:8px}
+@media (max-width:1280px){.tb-search{width:200px}.tb-date{display:none}.tb-user .lg-only,.tb-bell .lg-only{display:none}}
+.tb-bell,.tb-user,.topbar h1{white-space:nowrap}
+@media (max-width:860px){.tb-search{display:none}.tb-user{display:none}}
+
+/* ===== prettier top bar ===== */
+.tb-left{flex:1;min-width:220px}.tb-eyebrow,.topbar .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tb-actions{flex:none}
+.topbar{background:linear-gradient(90deg,#E2531A,#F28C28 55%,#F7B354) top/100% 4px no-repeat,#FFFFFF;border-bottom:1px solid #F2E4D8;box-shadow:0 4px 18px rgba(196,80,15,.06);padding:14px 28px 12px;min-height:76px}
+.tb-eyebrow{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#E8731A;margin-bottom:2px}.tb-eyebrow span{color:#E8CDB8;margin:0 2px}
+.topbar h1{color:#2B2522;font-size:21px;letter-spacing:-.2px}.topbar .sub{color:#8E8079;font-size:12.5px}
+.tb-actions{gap:12px}
+.tb-search{background:#F8F4F0;border:1px solid #EFE3D8;border-radius:999px;height:40px;padding:0 14px;width:250px;color:#B09A8B;transition:all .15s}
+.tb-search:focus-within{background:#fff;border-color:#F2A06A;box-shadow:0 0 0 4px rgba(238,106,31,.12);color:#E8731A}
+.tb-search input::placeholder{color:#B5A498}
+.tb-date{display:flex;align-items:center;gap:7px;color:#6B5D54;background:#FFF6EE;border:1px solid #F6E2D2;border-radius:999px;height:40px;padding:0 14px;font-size:12.5px;opacity:1}
+.tb-date svg{width:15px;height:15px;color:#E8731A}
+.tb-bell{position:relative;width:40px;height:40px;padding:0;justify-content:center;border-radius:50%;background:#FFF3E8;border:1px solid #F8D9C0;color:#C4500F}
+.tb-bell:hover{background:#FFE7D3}.tb-bell svg{width:18px;height:18px}
+.tb-bell b{position:absolute;top:-4px;right:-4px;background:linear-gradient(135deg,#E5484D,#B42318);color:#fff;border:2px solid #fff;min-width:20px;height:20px;font-size:10.5px;box-shadow:0 2px 6px rgba(180,35,24,.35)}
+.topbar .btn.primary{background:linear-gradient(135deg,#F28C28,#E2531A);border:0;color:#fff;border-radius:999px;height:40px;padding:0 18px;font-weight:600;box-shadow:0 6px 16px rgba(226,83,26,.28)}
+.topbar .btn.primary:hover{filter:brightness(1.05);background:linear-gradient(135deg,#F28C28,#E2531A)}
+.tb-user{color:#2B2522;border-left:1px solid #F2E4D8;padding-left:14px;gap:10px;cursor:pointer}
+.tb-user .av{position:relative;width:40px;height:40px;background:linear-gradient(135deg,#F7A541,#E2531A);color:#fff;box-shadow:0 0 0 3px #FFE7D3;font-size:13px}
+.tb-user .av i{position:absolute;right:0;bottom:0;width:10px;height:10px;border-radius:50%;background:#22A06B;border:2px solid #fff}
+.tb-user b{font-size:13px}.tb-user small{color:#8E8079;font-size:11.5px;opacity:1}
+.tb-user .chev{width:16px;height:16px;color:#B09A8B}
+.brand{min-height:52px}
+@media (max-width:1320px){.tb-date{display:none}}@media (max-width:1180px){.tb-search{width:190px}}
+@media (max-width:860px){.topbar{padding:12px 16px}.tb-eyebrow{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div style="background:#fff;border-radius:10px;padding:5px 7px;flex:none"><img src="data:image/png;base64,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" alt="Sun Pharma" style="height:44px;display:block"></div>
+      <div><b>Sun CareSetu</b><small>AI care partner for nursing homes</small></div>
+    </div>
+    <div class="home-card" id="homeCard"></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot">Concept prototype for Sun Pharma · Sun Prism S2.<br>Not an official Sun Pharma product. Not for clinical use. All patients are fictional.</div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-left"><div class="tb-eyebrow">Sun CareSetu <span>·</span> Shree Sai</div><h1 id="pageTitle">Today</h1><div class="sub" id="pageSub"></div></div>
+      <div class="tb-actions">
+        <label class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="tbSearch" type="search" placeholder="Search patient, bed or phone" autocomplete="off"></label>
+        <span class="tb-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="tbDate"></span></span>
+        <button class="tb-bell" data-nav="cp" title="Red flags from patients in follow-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg><b id="tbBell">0</b></button>
+        <button class="btn primary sm" data-act="new"><span>+ New<span class="lg-only"> pre-admission</span></span></button>
+        <div class="tb-user"><span class="av">AN<i></i></span><span class="lg-only"><b>Sister Anita</b><small>Head nurse · on duty</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<button class="btn primary fab" id="fab">✦ Ask Setu</button>
+<div class="chat card" id="chat">
+  <div class="card-h"><h3>✦ Ask Setu <span class="small" style="color:#5A4A40;font-weight:400">· pre-admission help</span></h3><button class="btn sm ghost" id="chatClose" style="color:#fff">✕</button></div>
+  <div class="chat-b" id="chatBody"></div>
+  <div class="sugs" id="sugs"></div>
+  <form class="chat-in" id="chatForm"><input type="text" id="chatIn" placeholder="Ask about this patient, PM-JAY, fasting…" autocomplete="off"><button class="btn primary sm" type="submit">Send</button></form>
+</div>
+
+<div class="modal" id="modal"><div class="card">
+  <div class="card-h"><h3 id="mTitle">Doctor review</h3><button class="btn sm ghost" data-act="mclose">✕</button></div>
+  <div class="card-b">
+    <div class="small muted" id="mText" style="margin-bottom:10px"></div>
+    <div class="f" style="margin-bottom:10px"><label>Reviewed by</label><input type="text" id="mBy" value="Dr. A. Deshmukh"></div>
+    <div class="f"><label>Decision and reason (goes to the audit trail)</label><textarea id="mReason" placeholder="e.g. Continue aspirin; cardiologist advice on file"></textarea></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button class="btn" data-act="mclose">Cancel</button><button class="btn navy" data-act="msave">Record review</button></div>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ helpers ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = v => (v === '' || v === null || v === undefined || isNaN(+v)) ? null : +v;
+const pad = n => String(n).padStart(2,'0');
+const isoDay = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addDays = n => { const d = new Date(); d.setDate(d.getDate()+n); return isoDay(d); };
+const fmtDate = s => { if(!s) return '—'; const d = new Date(s+'T00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); };
+const daysUntil = s => { if(!s) return null; const a = new Date(isoDay(new Date())+'T00:00'), b = new Date(s+'T00:00'); return Math.round((b-a)/864e5); };
+const nowStamp = () => { const d = new Date(); return `${isoDay(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const get = (o, p) => p.split('.').reduce((a,k)=> a==null?undefined:a[k], o);
+const set = (o, p, v) => { const ks = p.split('.'); let a = o; ks.slice(0,-1).forEach(k=>{ if(a[k]==null) a[k]={}; a=a[k]; }); a[ks.at(-1)] = v; };
+const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),2200); };
+
+/* ============ drug knowledge (brand-agnostic) ============ */
+const DRUGS = [
+  {k:['gemer'], g:'Glimepiride + Metformin', c:['sulfonylurea','biguanide']},
+  {k:['istamet','janumet'], g:'Sitagliptin + Metformin', c:['dpp4','biguanide']},
+  {k:['metformin','glycomet','glyciphage'], g:'Metformin', c:['biguanide']},
+  {k:['glimepiride','amaryl'], g:'Glimepiride', c:['sulfonylurea']},
+  {k:['gliclazide','diamicron'], g:'Gliclazide', c:['sulfonylurea']},
+  {k:['insulin','lantus','mixtard','huminsulin','basalog'], g:'Insulin', c:['insulin']},
+  {k:['telma','telmisartan'], g:'Telmisartan', c:['arb']},
+  {k:['losartan','losar','repace'], g:'Losartan', c:['arb']},
+  {k:['olmesartan','olmezest'], g:'Olmesartan', c:['arb']},
+  {k:['ramipril','cardace'], g:'Ramipril', c:['acei']},
+  {k:['enalapril','envas'], g:'Enalapril', c:['acei']},
+  {k:['amlodipine','amlong','amlopres','stamlo'], g:'Amlodipine', c:['ccb']},
+  {k:['nifedipine','depin'], g:'Nifedipine', c:['ccb']},
+  {k:['prolomet','metoprolol','metolar'], g:'Metoprolol', c:['bb']},
+  {k:['labetalol','lobet'], g:'Labetalol', c:['bb']},
+  {k:['methyldopa','aldomet'], g:'Methyldopa', c:['central']},
+  {k:['rosuvas','rosuvastatin','crestor','rozavel'], g:'Rosuvastatin', c:['statin']},
+  {k:['atorva','atorvastatin','storvas','lipitor','aztor'], g:'Atorvastatin', c:['statin']},
+  {k:['ecosprin','aspirin'], g:'Aspirin', c:['antiplatelet']},
+  {k:['clopilet','clopidogrel','plavix','clavix','deplatt'], g:'Clopidogrel', c:['antiplatelet','p2y12']},
+  {k:['warfarin','warf','acitrom','acenocoumarol'], g:'Vitamin K antagonist', c:['anticoag','vka']},
+  {k:['apixaban','eliquis','rivaroxaban','xarelto','dabigatran','pradaxa'], g:'DOAC', c:['anticoag']},
+  {k:['esomeprazole','sompraz','nexpro'], g:'Esomeprazole', c:['ppi','cyp2c19ppi']},
+  {k:['omeprazole','omez'], g:'Omeprazole', c:['ppi','cyp2c19ppi']},
+  {k:['pantoprazole','pantocid','pan 40','pan-d','pan d'], g:'Pantoprazole', c:['ppi']},
+  {k:['rabeprazole','razo','rablet'], g:'Rabeprazole', c:['ppi']},
+  {k:['spironolactone','aldactone'], g:'Spironolactone', c:['ksparing']},
+  {k:['furosemide','lasix'], g:'Furosemide', c:['loop']},
+  {k:['ibuprofen','brufen','combiflam','diclofenac','voveran','aceclofenac','zerodol','naproxen'], g:'NSAID', c:['nsaid']},
+  {k:['isosorbide','sorbitrate','nitroglycerin','nitrocontin','monotrate'], g:'Nitrate', c:['nitrate']},
+  {k:['sildenafil','tadalafil','penegra','manforce'], g:'PDE-5 inhibitor', c:['pde5']},
+  {k:['levothyroxine','thyronorm','eltroxin','thyrox'], g:'Levothyroxine', c:['thyroid']},
+  {k:['susten','progesterone','duphaston','dydrogesterone'], g:'Progestogen', c:['progestogen']},
+  {k:['ferrous','orofer','livogen','iron'], g:'Iron', c:['iron']},
+  {k:['folic','folvite'], g:'Folic acid', c:['folate']},
+  {k:['calcium','shelcal'], g:'Calcium', c:['calcium']},
+  {k:['amoxicillin','augmentin','amoxyclav','clavam','ampicillin','penicillin','mox '], g:'Penicillin-group antibiotic', c:['penicillin']},
+  {k:['cefazolin','ceftriaxone','cefuroxime','cefixime','monocef','taxim','cefoperazone'], g:'Cephalosporin', c:['cephalosporin']},
+  {k:['salbutamol','asthalin','levolin'], g:'Salbutamol', c:['saba']},
+];
+const CLASS_NAME = {biguanide:'metformin',sulfonylurea:'sulfonylurea',arb:'ARB',acei:'ACE inhibitor',statin:'statin',ppi:'PPI',nsaid:'NSAID',anticoag:'anticoagulant',p2y12:'P2Y12 inhibitor',antiplatelet:'antiplatelet',ccb:'calcium-channel blocker',bb:'beta-blocker'};
+function identify(name){
+  const n = ' '+String(name||'').toLowerCase()+' ';
+  if(!n.trim()) return null;
+  for(const d of DRUGS){ if(d.k.some(k=>n.includes(k))) return d; }
+  return {g:null,c:[]};
+}
+
+/* ============ home + demo cases ============ */
+const state = {
+  view:'today', activeId:null, step:0, lang:'en', filter:'all', modalFlag:null, thinking:false,
+  home:{name:'Shree Sai Nursing Home', city:'Nagpur', beds:30, pmjay:true, nabh:'Entry level in progress', tier:'CareSetu Plus'},
+  audit:[], cases:[]
+};
+function blankCase(){
+  return {
+    id:'C'+Math.random().toString(36).slice(2,7).toUpperCase(), created:nowStamp(),
+    p:{name:'',age:'',sex:'',phone:'',abha:'',lang:'Hindi',cgName:'',cgPhone:'',city:''},
+    a:{type:'surgery',proc:'',date:addDays(2),time:'09:00',doctor:'',anaes:'GA',prophylaxis:'',stay:'',ga:'',prevCS:false,gdm:false},
+    v:{h:'',w:'',sbp:'',dbp:'',pulse:'',spo2:'',npo:'',allergies:''},
+    cm:{dm:false,htn:false,cad:false,asthma:false,ckd:false,thyroid:false},
+    l:{hb:'',plt:'',rbs:'',hba1c:'',creat:'',bg:'',hiv:'',hbsag:'',hcv:'',ecg:''},
+    meds:[], noMeds:false,
+    pay:{mode:'cash',insurer:'',policy:'',preauth:'Not started',ecard:false,aadhaar:false,pkg:''},
+    cons:{general:false,proc:false,anaes:false,high:false,dpdp:false,follow:false},
+    docs:{id:false,records:false,estimate:false},
+    overrides:{}, finalized:null
+  };
+}
+function demo(){
+  const a = blankCase(); a.id='C1042'; a.created = addDays(-1)+' 11:20';
+  Object.assign(a.p,{name:'Ramesh Verma',age:61,sex:'M',phone:'9823011245',abha:'',lang:'Hindi',cgName:'Anil Verma (son)',cgPhone:'9823011290',city:'Nagpur'});
+  Object.assign(a.a,{type:'surgery',proc:'Laparoscopic cholecystectomy',date:addDays(2),time:'08:00',doctor:'Dr. A. Deshmukh',anaes:'GA',prophylaxis:'Cefazolin 2 g IV',stay:'2'});
+  Object.assign(a.v,{h:168,w:78,sbp:156,dbp:94,pulse:82,spo2:97,npo:8,allergies:'Penicillin (rash, 2019)'});
+  Object.assign(a.cm,{dm:true,htn:true,cad:true});
+  Object.assign(a.l,{hb:12.1,plt:210,rbs:212,hba1c:9.1,creat:1.6,bg:'B+',hiv:'Non-reactive',hbsag:'Non-reactive',hcv:'',ecg:''});
+  a.meds=[{n:'Gemer 2',d:'1 tab',f:'Twice daily'},{n:'Glycomet 500',d:'1 tab',f:'Night'},{n:'Telma 40',d:'1 tab',f:'Morning'},{n:'Losar 50',d:'1 tab',f:'Morning'},{n:'Clopilet 75',d:'1 tab',f:'Daily'},{n:'Omez 20',d:'1 cap',f:'Before breakfast'},{n:'Rosuvas 10',d:'1 tab',f:'Night'}];
+  Object.assign(a.pay,{mode:'insurance',insurer:'Star Health',policy:'P/171100/01/2026/004512',preauth:'Not started'});
+  Object.assign(a.cons,{general:true,proc:true,anaes:false,dpdp:false});
+  Object.assign(a.docs,{id:true,records:true,estimate:true});
+
+  const b = blankCase(); b.id='C1043'; b.created = addDays(-2)+' 16:05';
+  Object.assign(b.p,{name:'Sunita Patil',age:29,sex:'F',phone:'9765543210',abha:'91-4412-7781-2290',lang:'Hindi',cgName:'Rahul Patil (husband)',cgPhone:'9765543211',city:'Kamptee'});
+  Object.assign(b.a,{type:'maternity',proc:'Elective repeat LSCS',date:addDays(1),time:'10:00',doctor:'Dr. S. Kulkarni',anaes:'Spinal',prophylaxis:'Cefazolin 2 g IV',stay:'4',ga:38,prevCS:true,gdm:true});
+  Object.assign(b.v,{h:156,w:68,sbp:142,dbp:92,pulse:94,spo2:98,npo:8,allergies:'None known'});
+  Object.assign(b.l,{hb:9.2,plt:168,rbs:142,hba1c:'',creat:'',bg:'O−',hiv:'Non-reactive',hbsag:'Non-reactive',hcv:'Non-reactive',ecg:''});
+  b.meds=[{n:'Orofer XT',d:'1 tab',f:'Daily'},{n:'Shelcal 500',d:'1 tab',f:'Daily'},{n:'Labetalol 100',d:'1 tab',f:'Twice daily'}];
+  Object.assign(b.pay,{mode:'pmjay',ecard:false,aadhaar:true,preauth:'Not started',pkg:'Caesarean delivery'});
+  Object.assign(b.cons,{general:true,proc:true,anaes:true,dpdp:true,follow:true});
+  Object.assign(b.docs,{id:true,records:true,estimate:true});
+
+  const c = blankCase(); c.id='C1044'; c.created = addDays(-3)+' 10:40';
+  Object.assign(c.p,{name:'Meera Joshi',age:45,sex:'F',phone:'9890012345',abha:'',lang:'English',cgName:'Prakash Joshi',cgPhone:'9890012346',city:'Nagpur'});
+  Object.assign(c.a,{type:'surgery',proc:'Open inguinal hernia repair (mesh)',date:addDays(3),time:'11:00',doctor:'Dr. A. Deshmukh',anaes:'Spinal',prophylaxis:'Cefazolin 2 g IV',stay:'1'});
+  Object.assign(c.v,{h:160,w:64,sbp:128,dbp:82,pulse:76,spo2:99,npo:8,allergies:'None known'});
+  Object.assign(c.cm,{thyroid:true});
+  Object.assign(c.l,{hb:12.8,plt:245,rbs:104,creat:0.8,bg:'A+',hiv:'Non-reactive',hbsag:'Non-reactive',hcv:'Non-reactive',ecg:'Normal'});
+  c.meds=[{n:'Thyronorm 50',d:'1 tab',f:'Empty stomach'}];
+  Object.assign(c.pay,{mode:'cash'});
+  Object.assign(c.cons,{general:true,proc:true,anaes:true,dpdp:true,follow:false});
+  Object.assign(c.docs,{id:true,records:true,estimate:true});
+
+  const d = blankCase(); d.id='C1045'; d.created = addDays(0)+' 09:15';
+  Object.assign(d.p,{name:'Abdul Rahim',age:68,sex:'M',phone:'98220',abha:'',lang:'Hindi',cgName:'',cgPhone:'',city:'Wardha'});
+  Object.assign(d.a,{type:'medical',proc:'Uncontrolled diabetes, foot ulcer',date:addDays(0),time:'14:00',doctor:'Dr. R. Shaikh',anaes:'None',stay:'5'});
+  Object.assign(d.v,{h:'',w:'',sbp:184,dbp:102,pulse:104,spo2:93,npo:'',allergies:''});
+  Object.assign(d.cm,{dm:true,htn:true,ckd:true});
+  Object.assign(d.l,{hb:10.4,rbs:356,creat:2.4,bg:'',ecg:''});
+  d.meds=[{n:'Glycomet GP 2',d:'1 tab',f:'Twice daily'},{n:'Amlong 5',d:'1 tab',f:'Daily'},{n:'Brufen 400',d:'1 tab',f:'When needed'},{n:'Ecosprin 75',d:'1 tab',f:'Daily'}];
+  Object.assign(d.pay,{mode:'cash'});
+  state.cases=[b,a,c,d];
+  state.audit=[
+    {t:addDays(-3)+' 10:52', who:'Nurse Anita', what:'C1044 Meera Joshi · pre-admission created; 0 critical flags'},
+    {t:addDays(-2)+' 16:20', who:'Nurse Anita', what:'C1043 Sunita Patil · DPDP consent recorded (care, WhatsApp follow-up; data sharing declined)'},
+    {t:addDays(-1)+' 11:35', who:'Front desk', what:'C1042 Ramesh Verma · insurance details captured (Star Health)'},
+  ];
+}
+/* Glycomet GP = glimepiride + metformin — add before generic metformin */
+DRUGS.unshift({k:['glycomet gp','glycomet-gp'], g:'Glimepiride + Metformin', c:['sulfonylurea','biguanide']});
+
+/* ============ clinical calculations ============ */
+function bmi(c){ const h=num(c.v.h), w=num(c.v.w); return (h&&w)? w/((h/100)**2) : null; }
+function egfr(c){ // CKD-EPI 2021, race-free
+  const s=num(c.l.creat), age=num(c.p.age); if(!s||!age||!c.p.sex) return null;
+  const f = c.p.sex==='F', k = f?0.7:0.9, a = f?-0.241:-0.302;
+  return 142*Math.pow(Math.min(s/k,1),a)*Math.pow(Math.max(s/k,1),-1.2)*Math.pow(0.9938,age)*(f?1.012:1);
+}
+function shiftTime(t, h){ if(!t) return null; const [H,M]=t.split(':').map(Number); let m=H*60+M-h*60; const prev=m<0; m=(m+1440)%1440; const mid=m===0; return {t: mid?'midnight':`${pad(Math.floor(m/60))}:${pad(m%60)}`, prev: prev&&!mid, mid}; }
+function eligibleFollow(c){ return c.a.type==='maternity' || c.cm.dm || c.cm.htn || c.cm.cad; }
+const operative = c => c.a.type==='surgery' || (c.a.type==='maternity' && /lscs|caesar|cesar|c-section|section/i.test(c.a.proc));
+const pregnant = c => c.a.type==='maternity';
+
+/* ============ the sanity-check engine ============ */
+function evaluate(c){
+  const F=[], R=[];
+  const flag=(id,sev,cat,title,detail,src,step)=>F.push({id,sev,cat,title,detail,src,step});
+  const req=(label,done,step)=>R.push({label,done:!!done,step});
+  const age=num(c.p.age), B=bmi(c), G=egfr(c), op=operative(c), preg=pregnant(c);
+  const meds = c.meds.filter(m=>m.n.trim()).map(m=>({...m, id:identify(m.n)}));
+  const has = cls => meds.filter(m=>m.id && m.id.c.includes(cls));
+  const allergy = (c.v.allergies||'').toLowerCase();
+
+  /* --- identity & documentation --- */
+  req('Patient name', c.p.name.trim(), 0);
+  req('Age and sex', age && c.p.sex, 0);
+  const phoneOk = /^[6-9]\d{9}$/.test(String(c.p.phone).replace(/\D/g,''));
+  req('Valid mobile number', phoneOk, 0);
+  if(c.p.phone && !phoneOk) flag('phone','warn','Documentation','Mobile number looks wrong','Indian mobile numbers have 10 digits and start with 6–9. Follow-up and reminders depend on it.','Data check',0);
+  req('Caregiver name and phone', c.p.cgName.trim() && /^[6-9]\d{9}$/.test(String(c.p.cgPhone).replace(/\D/g,'')), 0);
+  if(c.p.abha && String(c.p.abha).replace(/\D/g,'').length!==14) flag('abha','info','Documentation','ABHA number should have 14 digits','ABHA is voluntary; leave blank if the patient has none.','ABDM format',0);
+  req('Procedure / reason for admission', c.a.proc.trim(), 1);
+  req('Admitting doctor', c.a.doctor.trim(), 1);
+  req('Allergy status recorded', c.v.allergies.trim(), 2);
+  if(!c.v.allergies.trim()) flag('allergy-missing','warn','Documentation','Allergy status not recorded','Write the allergy and reaction, or "None known". Missing allergy status is one of the most common documentation gaps.','Documentation standard',2);
+  req('Medicines reconciled', meds.length || c.noMeds, 4);
+  req('ID proof copied', c.docs.id, 5);
+  const anyCm = Object.values(c.cm).some(Boolean);
+  if(anyCm) req('Previous records / prescriptions attached', c.docs.records, 5);
+  req('Cost estimate shared with family', c.docs.estimate, 5);
+
+  /* --- vitals --- */
+  req('Height and weight', B, 2);
+  req('Blood pressure, pulse, SpO₂', num(c.v.sbp)&&num(c.v.dbp)&&num(c.v.pulse)&&num(c.v.spo2), 2);
+  const sbp=num(c.v.sbp), dbp=num(c.v.dbp);
+  if(sbp&&dbp){
+    if(preg){
+      if(sbp>=160||dbp>=110) flag('bp','crit','Clinical',`Severe-range BP in pregnancy (${sbp}/${dbp})`,'Needs urgent obstetrician review today, not routine admission.','Obstetric BP thresholds',2);
+      else if(sbp>=140||dbp>=90) flag('bp','warn','Clinical',`Raised BP in pregnancy (${sbp}/${dbp})`,'Check urine protein and symptoms; obstetrician to confirm the plan for hypertension in pregnancy.','Obstetric BP thresholds',2);
+    } else if(op){
+      if(sbp>=180||dbp>=110) flag('bp','crit','Clinical',`BP ${sbp}/${dbp} before elective surgery`,'At or above 180/110, elective surgery is usually deferred. Anaesthetist to review.','Pre-op BP guidance',2);
+      else if(sbp>=160||dbp>=100) flag('bp','warn','Clinical',`BP ${sbp}/${dbp} before surgery`,'Recheck after rest; anaesthetist to review control.','Pre-op BP guidance',2);
+    } else if(sbp>=180||dbp>=110) flag('bp','crit','Clinical',`Very high BP (${sbp}/${dbp})`,'Inform the admitting doctor on arrival; recheck after rest.','BP thresholds',2);
+  }
+  const spo2=num(c.v.spo2);
+  if(spo2!==null){ if(spo2<90) flag('spo2','crit','Clinical',`SpO₂ ${spo2}%`,'Low oxygen saturation: doctor to assess before admission.','Vital-sign threshold',2); else if(spo2<94) flag('spo2','warn','Clinical',`SpO₂ ${spo2}%`,'Below 94%: recheck and inform the doctor.','Vital-sign threshold',2); }
+  const pulse=num(c.v.pulse);
+  if(pulse!==null && (pulse>110||pulse<50)) flag('pulse','warn','Clinical',`Pulse ${pulse}/min`,'Outside the usual range: recheck and inform the doctor.','Vital-sign threshold',2);
+  if(B){ if(B>=40) flag('bmi','warn','Clinical',`BMI ${B.toFixed(1)}`,'Severe obesity: anaesthesia review and airway planning.','Anaesthesia risk',2); else if(B>=35&&op) flag('bmi','warn','Clinical',`BMI ${B.toFixed(1)}`,'Anaesthetist to review airway and positioning.','Anaesthesia risk',2); }
+  if(op && age>=65) flag('age','info','Clinical','Older patient (65+)','Screen for delirium and fall risk on admission; involve family.','Geriatric care',2);
+  if(op && c.cm.cad) flag('cad','warn','Clinical','Heart disease before surgery','Cardiac / anaesthesia review before the day of surgery.','Pre-op assessment',2);
+  if(op && ['GA','Spinal'].includes(c.a.anaes)){
+    const n=num(c.v.npo);
+    if(n===null) flag('npo','warn','Documentation','Fasting plan not set','Record fasting instructions so the patient card and WhatsApp message carry the right times.','Pre-op instructions',2);
+    else if(n<6) flag('npo','warn','Clinical',`Fasting planned for only ${n} h`,'General guide: no solid food for 6 hours before anaesthesia. Anaesthetist decides.','ASA fasting guidance',2);
+  }
+
+  /* --- maternity specifics --- */
+  if(preg){
+    const ga=num(c.a.ga);
+    req('Gestational age recorded', ga, 1);
+    if(ga && op && ga<39 && /elective/i.test(c.a.proc)) flag('ga','warn','Clinical',`Elective caesarean at ${ga} weeks`,'Planned caesarean before 39 weeks needs the medical indication documented.','Obstetric practice',1);
+    if(c.a.prevCS) flag('prevcs','info','Clinical','Previous caesarean','Confirm the plan (repeat CS or trial of labour) and that blood is arranged.','Obstetric practice',1);
+    if(c.a.gdm) flag('gdm','info','Clinical','Gestational diabetes','Plan newborn sugar checks; mother needs a glucose test after delivery (eligible for 90-day follow-up).','GDM care pathway',1);
+    if(/[-−]/.test(c.l.bg)) flag('rh','warn','Clinical','Rh-negative mother','Check antibody screen and keep the anti-D plan ready for after delivery.','Obstetric practice',3);
+  }
+
+  /* --- investigations --- */
+  const L=c.l, needs=[];
+  const want=(k,label,cond=true)=>{ if(!cond) return; const v=L[k]; const done = v!=='' && v!==null && v!=='Not done'; req(label, done, 3); if(!done) needs.push(label); };
+  if(op || preg){
+    want('hb','Haemoglobin'); want('plt','Platelets'); want('bg', preg?'Blood group and Rh':'Blood group');
+    want('rbs','Blood sugar'); want('hiv','HIV'); want('hbsag','HBsAg'); want('hcv','HCV', op);
+    want('creat','Creatinine', !preg && (age>=50||c.cm.dm||c.cm.htn||c.cm.ckd));
+    want('ecg','ECG', !preg && (age>=40||c.cm.cad||c.cm.htn||c.cm.dm));
+    want('hba1c','HbA1c', c.cm.dm && !preg);
+  } else {
+    want('hb','Haemoglobin'); want('rbs','Blood sugar'); want('creat','Creatinine'); want('ecg','ECG', c.cm.cad||age>=40);
+  }
+  if(needs.length) flag('labs-missing', op?'warn':'info','Investigations',`${needs.length} investigation${needs.length>1?'s':''} pending`,`Not yet done or not entered: ${needs.join(', ')}.`,'Pre-admission checklist',3);
+  const hb=num(L.hb);
+  if(hb!==null){
+    if(preg){ if(hb<7) flag('hb','crit','Clinical',`Severe anaemia (Hb ${hb})`,'Hb below 7 in pregnancy: obstetrician to plan correction and blood before delivery.','WHO anaemia in pregnancy',3);
+      else if(hb<10) flag('hb','warn','Clinical',`Moderate anaemia (Hb ${hb})`,'Hb 7–9.9 in pregnancy: arrange cross-matched blood; plan iron after delivery.','WHO anaemia in pregnancy',3);
+      else if(hb<11) flag('hb','info','Clinical',`Mild anaemia (Hb ${hb})`,'Continue iron; recheck after delivery.','WHO anaemia in pregnancy',3); }
+    else if(op){ if(hb<8) flag('hb','crit','Clinical',`Hb ${hb} before surgery`,'Low haemoglobin: surgeon/anaesthetist to decide on correction before elective surgery.','Pre-op assessment',3); else if(hb<10) flag('hb','warn','Clinical',`Hb ${hb} before surgery`,'Arrange blood availability; doctor to review.','Pre-op assessment',3); }
+    else if(hb<8) flag('hb','warn','Clinical',`Hb ${hb}`,'Low haemoglobin: inform the admitting doctor.','Lab threshold',3);
+  }
+  const plt=num(L.plt);
+  if(plt!==null && (op||preg)){ if(plt<50) flag('plt','crit','Clinical',`Platelets ${plt}k`,'Too low for surgery or spinal anaesthesia without review.','Anaesthesia safety',3); else if(plt<100) flag('plt','warn','Clinical',`Platelets ${plt}k`,'Below 100k: anaesthetist to confirm spinal is safe.','Anaesthesia safety',3); }
+  const rbs=num(L.rbs), a1c=num(L.hba1c);
+  if(rbs!==null){ if(rbs>=300) flag('rbs','crit','Clinical',`Blood sugar ${rbs} mg/dL`,'Very high: doctor to review today; check ketones.','Glycaemic threshold',3); else if(rbs>=200) flag('rbs','warn','Clinical',`Blood sugar ${rbs} mg/dL`,'High: plan sugar monitoring and control around admission.','Glycaemic threshold',3); }
+  if(a1c!==null && op && a1c>=8.5) flag('a1c','warn','Clinical',`HbA1c ${a1c}%`,'Poor long-term control before elective surgery: doctor to decide whether to optimise first. Higher wound-infection risk.','Peri-operative diabetes care',3);
+  if(G!==null){ if(G<30) flag('egfr','crit','Clinical',`eGFR ${Math.round(G)} (creatinine ${L.creat})`,'Severely reduced kidney function: review all medicine doses; avoid NSAIDs and contrast.','CKD-EPI 2021',3); else if(G<60) flag('egfr','info','Clinical',`eGFR ${Math.round(G)} (creatinine ${L.creat})`,'Reduced kidney function: check doses of renally cleared medicines.','CKD-EPI 2021',3); }
+  ['hiv','hbsag','hcv'].forEach(k=>{ if(L[k]==='Reactive') flag('viral-'+k,'warn','Clinical',`${k==='hbsag'?'HBsAg':k.toUpperCase()} reactive`,'Inform the OT/labour-room team for precautions; confidential counselling and linkage to care.','Infection control',3); });
+  if(L.ecg==='Abnormal') flag('ecg','warn','Clinical','Abnormal ECG','Doctor / cardiologist to review before the procedure.','Pre-op assessment',3);
+
+  /* --- medicines --- */
+  meds.filter(m=>m.id && !m.id.g).forEach((m,i)=>flag('unk-'+i,'info','Medication',`Couldn't identify "${m.n}"`,'Pharmacist to verify the generic name and dose.','Medicine reconciliation',4));
+  const dupCls=['biguanide','sulfonylurea','arb','acei','statin','ppi','nsaid','anticoag','p2y12'];
+  dupCls.forEach(cl=>{ const h=has(cl); if(h.length>1) flag('dup-'+cl,'warn','Medication',`Possible duplicate: two ${CLASS_NAME[cl]}s`,`${h.map(m=>`${m.n} (${m.id.g})`).join(' and ')} contain the same class. Prescriber to confirm both are intended.`,'Duplicate-therapy check',4); });
+  if(has('acei').length && has('arb').length) flag('ras','warn','Medication','ACE inhibitor with ARB','Dual RAS blockade raises potassium and kidney risk. Prescriber review.','Interaction check',4);
+  if((has('acei').length||has('arb').length) && has('ksparing').length) flag('k','warn','Medication','ACE inhibitor/ARB with spironolactone','Risk of high potassium: check serum potassium.','Interaction check',4);
+  if(has('p2y12').length && has('cyp2c19ppi').length) flag('ppi-clop','warn','Medication','Clopidogrel with omeprazole/esomeprazole',`${has('cyp2c19ppi').map(m=>m.n).join(', ')} can reduce clopidogrel's effect (CYP2C19). Prescriber to review the choice of PPI.`,'Interaction check',4);
+  if(has('nsaid').length && (has('anticoag').length||has('antiplatelet').length)) flag('nsaid-bleed','warn','Medication','Painkiller (NSAID) with a blood thinner',`${has('nsaid').map(m=>m.n).join(', ')} with ${[...has('anticoag'),...has('antiplatelet')].map(m=>m.n).join(', ')}: higher bleeding risk.`,'Interaction check',4);
+  if(has('nsaid').length && G!==null && G<60) flag('nsaid-kid','warn','Medication','NSAID with reduced kidney function','NSAIDs can worsen kidney function. Prescriber review.','Interaction check',4);
+  if(has('nitrate').length && has('pde5').length) flag('nit-pde','crit','Medication','Nitrate with sildenafil/tadalafil','Dangerous fall in blood pressure. Stop and inform the doctor.','Interaction check',4);
+  if(op && (has('anticoag').length||has('antiplatelet').length)) flag('thin-op','warn','Medication','Blood thinner before a procedure',`${[...has('anticoag'),...has('antiplatelet')].map(m=>m.n).join(', ')}: surgeon and anaesthetist to write a stop/continue plan (bleeding and spinal risk). Setu does not advise stopping.`,'Peri-operative medicines',4);
+  if(op && (has('sulfonylurea').length||has('insulin').length)) flag('hypo','info','Medication','Fasting with sugar-lowering medicine',`${[...has('sulfonylurea'),...has('insulin')].map(m=>m.n).join(', ')}: plan sugar checks while fasting; doctor to adjust the morning dose.`,'Peri-operative diabetes care',4);
+  if(has('biguanide').length && G!==null){ if(G<30) flag('met-egfr','crit','Medication',`Metformin with eGFR ${Math.round(G)}`,'Metformin is not advised below eGFR 30. Prescriber review.','Renal dosing',4); else if(G<45) flag('met-egfr','warn','Medication',`Metformin with eGFR ${Math.round(G)}`,'Dose review needed at eGFR 30–45.','Renal dosing',4); }
+  if(op && (has('acei').length||has('arb').length)) flag('ras-op','info','Medication','ACE inhibitor/ARB on the day of surgery','Anaesthetist to decide whether to give the morning dose.','Peri-operative medicines',4);
+  if(preg){ const bad=[...has('acei'),...has('arb'),...has('statin'),...has('vka')]; if(bad.length) flag('preg-drug','crit','Medication','Medicine not recommended in pregnancy',`${bad.map(m=>m.n).join(', ')}: prescriber to review now.`,'Pregnancy safety',4); }
+  if(/penicillin|amoxi|ampicillin/.test(allergy)){
+    const pen=[...has('penicillin')]; const proph=identify(c.a.prophylaxis);
+    if(pen.length || (proph&&proph.c.includes('penicillin'))) flag('allergy-pen','crit','Medication','Penicillin allergy with a penicillin-group antibiotic',`Allergy recorded: "${c.v.allergies}". Do not give until the doctor changes the order.`,'Allergy cross-check',4);
+    if(has('cephalosporin').length || (proph&&proph.c.includes('cephalosporin'))) flag('allergy-ceph','warn','Medication','Penicillin allergy with a cephalosporin',`Planned: ${c.a.prophylaxis||has('cephalosporin').map(m=>m.n).join(', ')}. Confirm the reaction type (rash vs anaphylaxis) with the doctor before the first dose.`,'Allergy cross-check',1);
+  }
+
+  /* --- payer --- */
+  const du = daysUntil(c.a.date);
+  if(c.pay.mode==='pmjay'){
+    if(!state.home.pmjay) flag('pmjay-emp','crit','Payer','This home is not PM-JAY empanelled','PM-JAY cases can only be treated cashless at empanelled hospitals. Refer to an empanelled hospital or agree cash payment in writing.','NHA empanelment rules',5);
+    req('PM-JAY beneficiary verified (e-card)', c.pay.ecard, 5);
+    req('Aadhaar copy for PM-JAY', c.pay.aadhaar, 5);
+    if(!c.pay.ecard) flag('pmjay-ecard','warn','Payer','PM-JAY beneficiary not verified','Verify the beneficiary and generate the e-card at the Arogya Mitra desk before admission.','PM-JAY process',5);
+    req('PM-JAY pre-authorisation raised', c.pay.preauth!=='Not started', 5);
+    if(c.pay.preauth==='Not started') flag('pmjay-preauth','warn','Payer','PM-JAY pre-authorisation not raised',`Planned procedure${du!==null?` in ${du} day${du===1?'':'s'}`:''}: raise pre-auth for the "${c.pay.pkg||'?'}" package now.`,'PM-JAY process',5);
+  }
+  if(c.pay.mode==='insurance'){
+    req('Insurer and policy number', c.pay.insurer.trim() && c.pay.policy.trim(), 5);
+    req('Cashless pre-authorisation submitted', c.pay.preauth!=='Not started', 5);
+    if(c.pay.preauth==='Not started') flag('ins-preauth', (du!==null&&du<=2)?'warn':'info','Payer','Cashless pre-authorisation not submitted',`Admission ${du===0?'today':du===1?'tomorrow':`in ${du} days`}. Planned admissions usually need advance intimation to the insurer/TPA; check the policy.`,'Insurer process',5);
+  }
+
+  /* --- consents --- */
+  req('General admission consent', c.cons.general, 5);
+  if(op || preg) req('Procedure-specific consent', c.cons.proc, 5);
+  if(['GA','Spinal'].includes(c.a.anaes)) req('Anaesthesia consent', c.cons.anaes, 5);
+  const crits = F.filter(f=>f.sev==='crit');
+  if(crits.length || (op && age>=65)) { req('High-risk consent', c.cons.high, 5); if(!c.cons.high) flag('high-consent','warn','Consent','High-risk consent needed',`${crits.length?`${crits.length} critical flag${crits.length>1?'s':''} open`:'Patient 65+ having a procedure'}: take an informed high-risk consent in the patient's language.`,'Consent standard',5); }
+  req('DPDP data consent (itemised)', c.cons.dpdp, 5);
+  if(!c.cons.dpdp) flag('dpdp','warn','Consent','Data-protection consent not recorded','Under the DPDP Act, record itemised consent (care, WhatsApp follow-up, anonymised data) with an easy way to withdraw.','DPDP Act and Rules 2025',5);
+  if(eligibleFollow(c) && !c.cons.follow) flag('follow','info','Continuity','Eligible for 90-day follow-up','Offer CareSetu follow-up now; enrolment completes at discharge. Free for the patient.','CareSetu Companion',5);
+
+  /* --- status --- */
+  F.forEach(f=>{ f.reviewed = c.overrides[f.id] || null; });
+  const done = R.filter(r=>r.done).length, score = R.length? Math.round(done/R.length*100):0;
+  const openCrit = F.filter(f=>f.sev==='crit' && !f.reviewed).length;
+  const openWarn = F.filter(f=>f.sev==='warn' && !f.reviewed).length;
+  const status = openCrit? 'Not ready' : (score<100||openWarn)? 'Needs attention' : 'Ready';
+  const order={crit:0,warn:1,info:2};
+  const catO={Medication:0,Clinical:1,Payer:2,Consent:3,Investigations:4,Documentation:5,Continuity:6};
+  F.sort((x,y)=> (!!x.reviewed - !!y.reviewed) || order[x.sev]-order[y.sev] || (catO[x.cat]??9)-(catO[y.cat]??9));
+  return {flags:F, reqs:R, score, status, openCrit, openWarn, info:F.filter(f=>f.sev==='info'&&!f.reviewed).length, meds, bmi:B, egfr:G};
+}
+const statusPill = s => s==='Ready'?'<span class="pill ok"><span class="dot"></span>Ready</span>' : s==='Not ready'?'<span class="pill crit"><span class="dot"></span>Not ready</span>':'<span class="pill warn"><span class="dot"></span>Needs attention</span>';
+const typeName = t => ({surgery:'Planned surgery',maternity:'Maternity',medical:'Medical admission'})[t];
+const payName = c => c.pay.mode==='pmjay'?'PM-JAY':c.pay.mode==='insurance'?(c.pay.insurer||'Insurance'):'Cash';
+
+/* ============ icons ============ */
+const I = {
+  today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>',
+  queue:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>',
+  how:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.6-.8z"/></svg>',
+  audit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>',
+};
+
+/* ============ render: shell ============ */
+function renderNav(){
+  const items=[['today','Today',IC.home],['pre','Pre-admit AI',IC.pre],['ward','In-stay',IC.ward],['dc','Discharge AI',IC.dc],['cp','90-day Companion',IC.cp],['ins','Insight',IC.ins],['acad','Academy & Quality',IC.acad],['how','AI & guardrails',IC.how],['audit','Audit trail',IC.audit]];
+  $('#nav').innerHTML = items.map(([k,l,ic])=>`<button class="${state.view===k||(state.view==='case'&&k==='pre')?'on':''}" data-nav="${k}">${ic}<span>${l}</span></button>`).join('');
+  const h=state.home;
+  $('#homeCard').innerHTML = `<strong>${esc(h.name)}</strong>${esc(h.city)} · ${h.beds} beds<br><span class="pill" style="background:#FFE7D3;color:#C4500F">${esc(h.tier)}</span><div style="margin-top:6px;font-size:11px;color:#9A8A80">Runs under the home’s name · supported by Sun Pharma</div>`;
+}
+function render(){
+  renderNav();
+  const T={today:['Today','The whole patient journey on one screen'],pre:['Pre-admit AI','Planned admissions and what needs attention before patients arrive'],ward:['In-stay','Admitted patients: documentation and due tasks'],dc:['Discharge AI','Summary, medicine timetable, patient card and enrolment'],cp:['90-day Companion','Coordinator workspace: calls ranked by risk, WhatsApp triage'],ins:['Insight','Owner dashboard: outcomes the home can show insurers'],acad:['Academy & Quality','Staff training and optional NABH readiness'],how:['AI & guardrails','What Setu checks, and what it never does'],audit:['Audit trail','Every review, override and sign-off, time-stamped']};
+  if(state.view==='case'){ const c=cur(); $('#pageTitle').textContent='Pre-admission · '+(c.p.name||'New patient'); $('#pageSub').textContent=`${c.id} · created ${c.created}`; }
+  else { $('#pageTitle').textContent=T[state.view][0]; $('#pageSub').textContent=T[state.view][1]; }
+  const v=state.view;
+  const V={today:viewHome,pre:viewToday,queue:viewQueue,ward:viewWard,dc:viewDischarge,cp:viewCompanion,ins:viewInsight,acad:viewAcademy,how:viewHow,audit:viewAudit};
+  $('#content').innerHTML = V[v]? V[v]() : viewCase();
+  if(v==='case') renderPanel();
+  if(v==='cp') scrollWA();
+}
+const cur = () => state.cases.find(c=>c.id===state.activeId);
+
+/* ============ views ============ */
+function queueTable(list){
+  if(!list.length) return '<div class="empty">No pre-admissions yet.</div>';
+  return `<div class="tablewrap"><table class="q"><thead><tr><th>Patient</th><th class="hide-m">Admission</th><th>Date</th><th class="hide-m">Payer</th><th>Flags</th><th class="hide-m">Readiness</th><th>Status</th></tr></thead><tbody>${
+    list.map(c=>{ const e=evaluate(c); const du=daysUntil(c.a.date);
+      return `<tr class="row" data-open="${c.id}"><td><div class="pname">${esc(c.p.name||'New patient')}</div><div class="small muted">${c.p.age?esc(c.p.age)+' '+esc(c.p.sex):''} ${c.p.city?'· '+esc(c.p.city):''}</div></td>
+      <td class="hide-m"><div>${esc(c.a.proc||'—')}</div><div class="small muted">${typeName(c.a.type)}</div></td>
+      <td><div>${fmtDate(c.a.date)} ${esc(c.a.time||'')}</div><div class="small muted">${du===0?'Today':du===1?'Tomorrow':du>1?`In ${du} days`:''}</div></td>
+      <td class="hide-m">${esc(payName(c))}</td>
+      <td>${e.openCrit?`<span class="pill crit">${e.openCrit} critical</span> `:''}${e.openWarn?`<span class="pill warn">${e.openWarn} review</span>`:''}${!e.openCrit&&!e.openWarn?'<span class="pill ok">Clear</span>':''}</td>
+      <td class="hide-m"><div style="display:flex;align-items:center;gap:8px"><div class="bar"><i style="width:${e.score}%"></i></div><span class="small">${e.score}%</span></div></td>
+      <td>${c.finalized?'<span class="pill ok">✓ Signed off</span>':statusPill(e.status)}</td></tr>`; }).join('')}</tbody></table></div>`;
+}
+function viewToday(){
+  const list=[...state.cases].sort((a,b)=>(a.a.date+a.a.time).localeCompare(b.a.date+b.a.time));
+  const ev=list.map(c=>({c,e:evaluate(c)}));
+  const soon=ev.filter(x=>{const d=daysUntil(x.c.a.date); return d!==null&&d>=0&&d<=3;});
+  const cnt=s=>ev.filter(x=>!x.c.finalized&&x.e.status===s).length;
+  const avg=Math.round(ev.reduce((a,x)=>a+x.e.score,0)/(ev.length||1));
+  const fol=ev.filter(x=>eligibleFollow(x.c)).length;
+  const cats={}; ev.forEach(x=>x.e.flags.filter(f=>!f.reviewed&&f.sev!=='info').forEach(f=>cats[f.cat]=(cats[f.cat]||0)+1));
+  ev.forEach(x=>x.e.reqs.filter(r=>!r.done).forEach(()=>cats['Documentation']=(cats['Documentation']||0)+1));
+  const ce=Object.entries(cats).sort((a,b)=>b[1]-a[1]); const mx=ce.length?ce[0][1]:1;
+  return `
+  <div class="grid kpis">
+    <div class="card kpi"><div class="l">Planned in next 3 days</div><div class="v">${soon.length}</div><div class="d">${ev.length} in the queue</div></div>
+    <div class="card kpi"><div class="l">Ready</div><div class="v" style="color:var(--ok)">${cnt('Ready')+ev.filter(x=>x.c.finalized).length}</div><div class="d">incl. signed off</div></div>
+    <div class="card kpi"><div class="l">Needs attention</div><div class="v" style="color:var(--warn)">${cnt('Needs attention')}</div><div class="d">warnings or gaps</div></div>
+    <div class="card kpi"><div class="l">Not ready</div><div class="v" style="color:var(--crit)">${cnt('Not ready')}</div><div class="d">critical flag open</div></div>
+    <div class="card kpi"><div class="l">Documentation complete</div><div class="v">${avg}%</div><div class="d">average checklist score</div></div>
+    <div class="card kpi"><div class="l">Eligible for 90-day follow-up</div><div class="v">${fol}</div><div class="d">chronic or maternity</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr);margin-top:16px" id="todayGrid">
+    <div class="card"><div class="card-h"><h3>Upcoming admissions</h3><span class="small muted">Click a patient to open the pre-admission</span></div>${queueTable(list)}</div>
+    <div class="grid" style="align-content:start">
+      <div class="card"><div class="card-h"><h3>Where the gaps are</h3><span class="small muted">open items, all patients</span></div><div class="card-b issues">
+        ${ce.map(([k,v])=>`<div class="it"><span>${k}</span><div class="track"><i style="width:${v/mx*100}%"></i></div><b style="text-align:right">${v}</b></div>`).join('')||'<div class="muted">No open items.</div>'}
+        <p class="small muted" style="margin:10px 0 0">In the Manyata quality study, 70% of gaps in small private hospitals were documentation. Setu catches them before the patient arrives.</p>
+      </div></div>
+      <div class="card"><div class="card-h"><h3>Try the demo</h3></div><div class="card-b small" style="color:var(--ink-2)">
+        <p style="margin:0 0 8px"><b>Ramesh Verma</b>: duplicate diabetes and BP medicines, clopidogrel with omeprazole, a penicillin allergy with cefazolin planned, and no cashless pre-auth yet.</p>
+        <p style="margin:0 0 8px"><b>Sunita Patil</b>: a repeat C-section with anaemia, an Rh-negative blood group and no PM-JAY e-card yet.</p>
+        <p style="margin:0"><b>Abdul Rahim</b>: missing data, a wrong phone number, very high BP and sugar, and an NSAID with poor kidneys.</p>
+      </div></div>
+    </div>
+  </div>`;
+}
+function viewQueue(){ return `<div class="card">${queueTable(state.cases)}</div>`; }
+function viewHow(){
+  return `<div class="how">
+    <div class="card card-b"><h4>1 · Reads what staff enter</h4><p>Front desk and nurses fill one pre-admission form: patient, procedure, vitals, reports, medicines, payer and consents. Any brand name works: Setu maps it to the generic name and drug class.</p></div>
+    <div class="card card-b"><h4>2 · Runs 60+ sanity checks</h4><p>Every change re-runs the checks: clinical thresholds, interactions, duplicates, allergy cross-checks, missing investigations, payer paperwork and consent gaps. Each flag says why and cites its rule.</p></div>
+    <div class="card card-b"><h4>3 · The doctor decides</h4><p>Critical flags block sign-off until a doctor records a decision and reason. Setu never prescribes, never stops a medicine and never diagnoses. It prepares the brief, the checklist and the patient's instructions.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><h3>What Setu checks</h3></div><div class="card-b"><ul class="rulelist">
+    <li><b>Vitals:</b> BP thresholds (pre-op and pregnancy), SpO₂, pulse, BMI, fasting window</li>
+    <li><b>Labs:</b> Hb (WHO pregnancy bands), platelets for spinal, sugar and HbA1c, eGFR (CKD-EPI 2021), viral markers, ECG</li>
+    <li><b>Required investigations</b> by admission type, age and comorbidity</li>
+    <li><b>Medicines:</b> duplicate classes, ACEi + ARB, clopidogrel + omeprazole, NSAID + blood thinner, nitrate + PDE-5, metformin and kidneys, pregnancy-unsafe drugs</li>
+    <li><b>Allergy cross-check</b> against medicines and the planned antibiotic</li>
+    <li><b>Peri-operative:</b> blood thinners, sugar-lowering drugs while fasting, ACEi/ARB on surgery day</li>
+    <li><b>Maternity:</b> gestation for elective CS, previous CS, GDM, Rh-negative</li>
+    <li><b>Payer:</b> PM-JAY empanelment, e-card, Aadhaar, pre-auth; cashless pre-auth timing</li>
+    <li><b>Consents:</b> general, procedure, anaesthesia, high-risk, DPDP itemised data consent</li>
+    <li><b>Continuity:</b> offers 90-day CareSetu follow-up to chronic and maternity patients</li>
+  </ul></div></div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><h3>Guardrails</h3></div><div class="card-b"><ul class="rulelist">
+    <li><b>Clinician in the loop:</b> AI suggests, the registered doctor decides (Telemedicine Guidelines 2020)</li>
+    <li><b>Brand-agnostic:</b> works with any company's medicines; never steers prescriptions (UCPMP 2024)</li>
+    <li><b>Data:</b> itemised consent, withdrawal anytime; patient data stays with the nursing home, Sun sees only anonymised totals (DPDP)</li>
+    <li><b>Regulatory:</b> clinical triage runs on a CDSCO-licensed platform partner before scale</li>
+    <li><b>NABH:</b> supports documentation that entry-level standards expect; no promise of certification</li>
+    <li><b>This prototype:</b> runs on transparent rules with a fixed knowledge base; production would add a licensed clinical model and pharmacist validation</li>
+  </ul></div></div>`;
+}
+function viewAudit(){
+  const rows=[...state.audit].reverse();
+  return `<div class="card"><div class="card-h"><h3>Audit trail</h3><span class="small muted">${rows.length} entries</span></div><div class="card-b audit">${rows.map(a=>`<div>${esc(a.t)} · <b>${esc(a.who)}</b> · ${esc(a.what)}</div>`).join('')||'Nothing yet.'}</div></div>`;
+}
+
+/* ============ case workspace ============ */
+const STEPS=['Patient','Admission','Vitals & history','Investigations','Medicines','Payer & consent','Review & sign-off'];
+function f(label, path, opt={}){
+  const c=cur(); const v=get(c,path)??''; const cls=opt.w||'c4'; const type=opt.type||'text';
+  let ctl;
+  if(type==='select') ctl=`<select data-f="${path}">${opt.options.map(o=>`<option ${String(o)===String(v)?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+  else if(type==='textarea') ctl=`<textarea data-f="${path}" placeholder="${esc(opt.ph||'')}">${esc(v)}</textarea>`;
+  else ctl=`<input type="${type}" data-f="${path}" value="${esc(v)}" placeholder="${esc(opt.ph||'')}" ${opt.step?`step="${opt.step}"`:''} ${type==='number'?'inputmode="decimal"':''}>`;
+  return `<div class="f ${cls}"><label>${label}</label>${ctl}${opt.hint?`<span class="hint">${opt.hint}</span>`:''}</div>`;
+}
+function seg(label, path, options, w='c12'){
+  const v=get(cur(),path);
+  return `<div class="f ${w}"><label>${label}</label><div class="seg">${options.map(([val,l])=>`<button type="button" class="${v===val?'on':''}" data-seg="${path}" data-val="${val}">${l}</button>`).join('')}</div></div>`;
+}
+function chk(label, path){ const v=!!get(cur(),path); return `<label class="chk ${v?'on':''}"><input type="checkbox" data-c="${path}" ${v?'checked':''}>${label}</label>`; }
+
+function stepBody(s){
+  const c=cur();
+  if(s===0) return `<div class="form">
+    <div class="section-t">Patient</div>
+    ${f('Full name','p.name',{w:'c6',ph:'As on ID proof'})}${f('Age','p.age',{type:'number',w:'c2'})}
+    <div class="f c4"><label>Sex</label><div class="seg">${[['M','Male'],['F','Female'],['O','Other']].map(([v,l])=>`<button type="button" class="${c.p.sex===v?'on':''}" data-seg="p.sex" data-val="${v}">${l}</button>`).join('')}</div></div>
+    ${f('Mobile (WhatsApp)','p.phone',{type:'tel',w:'c4',ph:'10-digit mobile'})}${f('ABHA number (optional)','p.abha',{w:'c4',ph:'14 digits',hint:'Voluntary. Never required to admit.'})}${f('Preferred language','p.lang',{type:'select',options:['Hindi','English','Marathi'],w:'c4'})}
+    <div class="section-t">Caregiver</div>
+    ${f('Caregiver name and relation','p.cgName',{w:'c6'})}${f('Caregiver mobile','p.cgPhone',{type:'tel',w:'c3'})}${f('Town / village','p.city',{w:'c3'})}
+  </div>`;
+  if(s===1) return `<div class="form">
+    ${seg('Admission type','a.type',[['surgery','Planned surgery'],['maternity','Maternity'],['medical','Medical admission']])}
+    ${f(c.a.type==='maternity'?'Plan (e.g. elective repeat LSCS, induction)':c.a.type==='medical'?'Reason for admission':'Procedure','a.proc',{w:'c8'})}${f('Admitting doctor','a.doctor',{w:'c4'})}
+    ${f('Planned date','a.date',{type:'date',w:'c3'})}${f('Time','a.time',{type:'time',w:'c3'})}${f('Anaesthesia','a.anaes',{type:'select',options:['GA','Spinal','Local','None'],w:'c3'})}${f('Expected stay (days)','a.stay',{type:'number',w:'c3'})}
+    ${c.a.type!=='medical'?f('Planned antibiotic prophylaxis','a.prophylaxis',{w:'c6',ph:'e.g. Cefazolin 2 g IV',hint:'Cross-checked against recorded allergies.'}):''}
+    ${c.a.type==='maternity'?`<div class="section-t">Pregnancy</div>${f('Gestational age (weeks)','a.ga',{type:'number',w:'c3'})}<div class="f c8"><label>History</label><div class="checks">${chk('Previous caesarean','a.prevCS')}${chk('Gestational diabetes','a.gdm')}</div></div>`:''}
+  </div>`;
+  if(s===2){ const e=evaluate(c); const ft=shiftTime(c.a.time, num(c.v.npo)||0);
+    return `<div class="form">
+    <div class="section-t">Vitals at pre-admission visit</div>
+    ${f('Height (cm)','v.h',{type:'number',w:'c2'})}${f('Weight (kg)','v.w',{type:'number',w:'c2'})}<div class="f c2"><label>BMI</label><div class="computed">${e.bmi?e.bmi.toFixed(1):'—'}</div></div>
+    ${f('BP systolic','v.sbp',{type:'number',w:'c2'})}${f('BP diastolic','v.dbp',{type:'number',w:'c2'})}${f('Pulse','v.pulse',{type:'number',w:'c2'})}
+    ${f('SpO₂ %','v.spo2',{type:'number',w:'c2'})}
+    ${operative(c)||c.a.anaes!=='None'?`${f('Fasting before procedure (hours)','v.npo',{type:'number',w:'c4',hint:ft&&num(c.v.npo)?`Solid food stops at ${ft.t}${ft.prev?' the night before':''}`:'Used for the patient card and WhatsApp message'})}`:''}
+    <div class="section-t">History</div>
+    <div class="f c12"><label>Known conditions</label><div class="checks">${chk('Diabetes','cm.dm')}${chk('Hypertension','cm.htn')}${chk('Heart disease','cm.cad')}${chk('Asthma / COPD','cm.asthma')}${chk('Kidney disease','cm.ckd')}${chk('Thyroid','cm.thyroid')}</div></div>
+    ${f('Allergies and reaction','v.allergies',{type:'textarea',w:'c12',ph:'e.g. Penicillin (rash) — or write "None known"'})}
+  </div>`; }
+  if(s===3){ const e=evaluate(c);
+    return `<div class="form">
+    ${f('Haemoglobin (g/dL)','l.hb',{type:'number',step:'0.1',w:'c3'})}${f('Platelets (×1000/µL)','l.plt',{type:'number',w:'c3'})}${f('Random blood sugar (mg/dL)','l.rbs',{type:'number',w:'c3'})}${f('HbA1c (%)','l.hba1c',{type:'number',step:'0.1',w:'c3'})}
+    ${f('Creatinine (mg/dL)','l.creat',{type:'number',step:'0.1',w:'c3'})}<div class="f c3"><label>eGFR (CKD-EPI 2021)</label><div class="computed">${e.egfr?Math.round(e.egfr)+' mL/min/1.73m²':'—'}</div></div>
+    ${f('Blood group','l.bg',{type:'select',options:['','A+','A−','B+','B−','AB+','AB−','O+','O−'],w:'c3'})}${f('ECG','l.ecg',{type:'select',options:['','Not done','Normal','Abnormal'],w:'c3'})}
+    ${f('HIV','l.hiv',{type:'select',options:['','Not done','Non-reactive','Reactive'],w:'c4'})}${f('HBsAg','l.hbsag',{type:'select',options:['','Not done','Non-reactive','Reactive'],w:'c4'})}${f('HCV','l.hcv',{type:'select',options:['','Not done','Non-reactive','Reactive'],w:'c4'})}
+    <div class="c12 small muted">Setu works out which tests this patient needs from the admission type, age and conditions, and lists the pending ones in the panel.</div>
+  </div>`; }
+  if(s===4){ return `<div>
+    <div class="small muted" style="margin-bottom:8px">Type any brand or generic name. Setu recognises the molecule and class, then checks duplicates, interactions, allergies, kidney function, pregnancy and fasting.</div>
+    ${c.meds.map((m,i)=>{ const id=identify(m.n); return `<div class="med">
+      <div class="f"><label>Medicine ${i+1}</label><input type="text" data-med="${i}" data-k="n" value="${esc(m.n)}" placeholder="e.g. Telma 40"><div class="rec" id="rec-${i}">${recHtml(id)}</div></div>
+      <div class="f"><label>Dose</label><input type="text" data-med="${i}" data-k="d" value="${esc(m.d)}"></div>
+      <div class="f"><label>When</label><input type="text" data-med="${i}" data-k="f" value="${esc(m.f)}"></div>
+      <button class="iconbtn" title="Remove" data-act="delmed" data-i="${i}" style="margin-top:20px">✕</button></div>`; }).join('')}
+    <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap"><button class="btn sm" data-act="addmed">+ Add medicine</button>${chk('Patient takes no regular medicines','noMeds')}</div>
+  </div>`; }
+  if(s===5) return `<div class="form">
+    ${seg('Who pays','pay.mode',[['cash','Cash'],['insurance','Private insurance (cashless)'],['pmjay','PM-JAY (Ayushman Bharat)']])}
+    ${c.pay.mode==='insurance'?`${f('Insurer / TPA','pay.insurer',{w:'c4'})}${f('Policy number','pay.policy',{w:'c4'})}${f('Pre-authorisation','pay.preauth',{type:'select',options:['Not started','Submitted','Approved','Query raised'],w:'c4'})}`:''}
+    ${c.pay.mode==='pmjay'?`${f('PM-JAY package','pay.pkg',{w:'c4'})}${f('Pre-authorisation','pay.preauth',{type:'select',options:['Not started','Submitted','Approved','Query raised'],w:'c4'})}<div class="f c4"><label>Beneficiary</label><div class="checks">${chk('e-card verified','pay.ecard')}${chk('Aadhaar copy','pay.aadhaar')}</div></div>`:''}
+    <div class="section-t">Documents</div>
+    <div class="f c12"><div class="checks">${chk('ID proof copied','docs.id')}${chk('Previous records / prescriptions','docs.records')}${chk('Cost estimate shared with family','docs.estimate')}</div></div>
+    <div class="section-t">Consents (in the patient's language)</div>
+    <div class="f c12"><div class="checks">${chk('General admission','cons.general')}${chk('Procedure-specific','cons.proc')}${chk('Anaesthesia','cons.anaes')}${chk('High-risk','cons.high')}${chk('DPDP data consent (itemised)','cons.dpdp')}</div></div>
+    <div class="section-t">Continuity</div>
+    <div class="f c12">${eligibleFollow(c)?`<div class="checks">${chk('Patient agreed to CareSetu 90-day follow-up (WhatsApp + coordinator calls)','cons.follow')}</div><span class="hint">Free for the patient. Runs under ${esc(state.home.name)}'s name; the patient's own doctor stays in charge.</span>`:'<span class="hint">Not in the 90-day follow-up pathway (offered to chronic and maternity patients).</span>'}</div>
+  </div>`;
+  return viewReview();
+}
+function recHtml(id){
+  if(!id) return '';
+  if(!id.g) return '<span class="tag" style="color:var(--warn)">Not recognised: pharmacist to verify</span>';
+  return `<span class="tag">${esc(id.g)}</span>${id.c.filter(x=>CLASS_NAME[x]).map(x=>`<span class="tag">${CLASS_NAME[x]}</span>`).join('')}`;
+}
+function viewCase(){
+  const c=cur(), e=evaluate(c);
+  const stepFlags = i => e.flags.filter(fl=>fl.step===i && !fl.reviewed);
+  return `<div class="case-head"><div class="who"><div class="avatar">${esc((c.p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div><div><h2>${esc(c.p.name||'New patient')}</h2><div class="small muted">${[c.p.age&&`${c.p.age} ${c.p.sex}`,typeName(c.a.type),c.a.proc,c.a.date&&`${fmtDate(c.a.date)} ${c.a.time}`,payName(c)].filter(Boolean).map(esc).join(' · ')}</div></div></div>
+    <div style="display:flex;gap:8px"><button class="btn sm" data-nav="queue">← Back</button><button class="btn sm navy" data-act="go" data-s="6">Review & sign-off</button></div></div>
+  <div class="ws"><div>
+    <div class="steps">${STEPS.map((s,i)=>{ const fl=stepFlags(i); const cr=fl.filter(x=>x.sev==='crit').length, w=fl.filter(x=>x.sev==='warn').length;
+      return `<button class="step ${state.step===i?'on':''}" data-act="go" data-s="${i}"><span class="n">${i+1}</span>${s}${i<6?(cr?`<span class="badge crit">${cr}</span>`:w?`<span class="badge warn">${w}</span>`:''):''}</button>`; }).join('')}</div>
+    <div class="card"><div class="card-b" id="stepBody">${stepBody(state.step)}</div></div>
+    ${state.step<6?`<div class="form-foot"><button class="btn" data-act="go" data-s="${Math.max(0,state.step-1)}" ${state.step===0?'disabled':''}>← Previous</button><button class="btn primary" data-act="go" data-s="${state.step+1}">${state.step===5?'Review & sign-off →':'Next →'}</button></div>`:''}
+  </div>
+  <aside class="card ai" id="aiPanel"></aside></div>`;
+}
+function renderPanel(){
+  const c=cur(); if(!c) return; const e=evaluate(c);
+  const pct=e.score, r=27, C=2*Math.PI*r;
+  const col = e.status==='Ready'?'var(--ok)':e.status==='Not ready'?'var(--crit)':'var(--warn)';
+  const list = e.flags.filter(fl=> state.filter==='all' || fl.sev===state.filter);
+  $('#aiPanel').innerHTML = `
+   <div class="ai-h"><div class="ring"><svg width="64" height="64"><circle cx="32" cy="32" r="${r}" stroke="var(--line)" stroke-width="7" fill="none"/><circle cx="32" cy="32" r="${r}" stroke="${col}" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct/100)}"/></svg><b>${pct}%</b></div>
+     <div style="min-width:0"><div class="small muted">✦ Setu sanity check</div><div class="st">${c.finalized?'Signed off':e.status}</div><div class="small muted">${e.reqs.filter(x=>x.done).length}/${e.reqs.length} checklist items · ${state.thinking?'<span class="thinking"><i></i><i></i><i></i> re-checking</span>':'checked just now'}</div></div></div>
+   <div class="ai-filter">${[['all',`All ${e.flags.length}`],['crit',`Critical ${e.flags.filter(x=>x.sev==='crit').length}`],['warn',`Review ${e.flags.filter(x=>x.sev==='warn').length}`],['info',`Notes ${e.flags.filter(x=>x.sev==='info').length}`]].map(([k,l])=>`<button class="${state.filter===k?'on':''}" data-filter="${k}">${l}</button>`).join('')}</div>
+   <div class="flags">${list.length? list.map(fl=>`<div class="flag ${fl.sev} ${fl.reviewed?'done':''}"><div class="ic">${fl.sev==='crit'?'!':fl.sev==='warn'?'?':'i'}</div><div>
+      <div class="t">${esc(fl.title)}</div><div class="d">${esc(fl.detail)}</div>
+      ${fl.reviewed?`<div class="ov">✓ ${esc(fl.reviewed.by)} · ${esc(fl.reviewed.at)}<br>${esc(fl.reviewed.reason)}</div>`:''}
+      <div class="m"><span class="pill neutral">${fl.cat}</span><span class="src">Rule: ${esc(fl.src)}</span>
+      ${!fl.reviewed && fl.sev!=='info'?`<button class="btn sm" data-act="review" data-id="${fl.id}">Doctor review</button>`:''}
+      ${state.step!==fl.step?`<button class="btn sm ghost" data-act="go" data-s="${fl.step}">Go to field</button>`:''}</div></div></div>`).join('') : `<div class="empty">${state.filter==='all'?'No flags. Everything Setu checks looks fine.':'Nothing in this filter.'}</div>`}</div>`;
+}
+
+/* ============ review ============ */
+const HI = {
+  title:'भर्ती से पहले आपकी जानकारी', date:'भर्ती', doctor:'डॉक्टर',
+  solids:(t,p)=>`${t==='midnight'?'आधी रात (12 बजे)':(p?'पिछली रात ':'')+t} के बाद कुछ भी ठोस न खाएं।`, water:t=>`${t} तक केवल साफ़ पानी पी सकते हैं, जब तक डॉक्टर कुछ और न कहें।`,
+  bring:'साथ लाएं: आधार कार्ड, बीमा/आयुष्मान कार्ड, पुरानी रिपोर्ट और सभी दवाइयाँ।',
+  ask:m=>`इन दवाइयों के बारे में डॉक्टर से पूछें, खुद से बंद न करें: ${m}`,
+  meds:'अपनी सभी दवाइयाँ साथ लाएं। कौन-सी दवा लेनी है, डॉक्टर बताएंगे।',
+  call:p=>`कोई सवाल हो तो कॉल करें: ${p}`,
+  follow:'छुट्टी के बाद 90 दिन तक हमारी टीम आपसे WhatsApp और फ़ोन पर संपर्क में रहेगी — मुफ़्त।',
+  danger:'खून बहना, तेज़ बुखार, साँस फूलना या सीने में दर्द हो तो तुरंत अस्पताल आएं।'
+};
+function patientLines(c, lang){
+  const e=evaluate(c); const n=num(c.v.npo); const s=n?shiftTime(c.a.time,n):null, w=n?shiftTime(c.a.time,2):null;
+  const ask=[...new Set(e.flags.filter(f=>f.cat==='Medication'&&/thinner|fasting|metformin|ACE|duplicate|clopidogrel/i.test(f.title)).flatMap(f=>e.meds.filter(m=>f.detail.includes(m.n)).map(m=>m.n)))];
+  const phone='0712-2554 300';
+  if(lang==='hi') return {title:HI.title, lines:[`${HI.date}: ${fmtDate(c.a.date)}, ${c.a.time} · ${HI.doctor}: ${c.a.doctor||'—'}`, ...(s?[HI.solids(s.t,s.prev),HI.water(w.t)]:[]), HI.bring, ask.length?HI.ask(ask.join(', ')):HI.meds, ...(c.cons.follow?[HI.follow]:[]), HI.danger, HI.call(phone)]};
+  return {title:'Before your admission', lines:[`Admission: ${fmtDate(c.a.date)}, ${c.a.time} · Doctor: ${c.a.doctor||'—'}`, ...(s?[`Do not eat solid food after ${s.t}${s.prev?' the night before':''}.`,`You may drink clear water until ${w.t}, unless the doctor says otherwise.`]:[]), 'Bring: Aadhaar, insurance / Ayushman card, old reports and all your medicines.', ask.length?`Ask the doctor about these medicines — do not stop them on your own: ${ask.join(', ')}`:'Bring all your medicines. The doctor will tell you which to take.', ...(c.cons.follow?['After discharge our team stays in touch for 90 days on WhatsApp and phone — free.']:[]), 'Come in at once for bleeding, high fever, breathlessness or chest pain.', `Questions? Call ${phone}`]};
+}
+function brief(c){
+  const e=evaluate(c);
+  const cm=Object.entries({dm:'diabetes',htn:'hypertension',cad:'heart disease',asthma:'asthma/COPD',ckd:'kidney disease',thyroid:'thyroid'}).filter(([k])=>c.cm[k]).map(([,v])=>v);
+  const L=c.l; const labs=[L.hb&&`Hb ${L.hb}`,L.plt&&`plt ${L.plt}k`,L.rbs&&`RBS ${L.rbs}`,L.hba1c&&`HbA1c ${L.hba1c}%`,L.creat&&`creat ${L.creat}${e.egfr?` (eGFR ${Math.round(e.egfr)})`:''}`,L.bg&&`group ${L.bg}`,L.ecg&&`ECG ${L.ecg.toLowerCase()}`].filter(Boolean).join(', ');
+  const open=e.flags.filter(f=>!f.reviewed&&f.sev!=='info');
+  return `${c.p.name||'Patient'}, ${c.p.age||'?'} ${c.p.sex||''} — ${typeName(c.a.type).toLowerCase()}: ${c.a.proc||'—'}${c.a.type==='maternity'&&c.a.ga?` at ${c.a.ga} weeks`:''}, ${fmtDate(c.a.date)} ${c.a.time}${c.a.anaes&&c.a.anaes!=='None'?`, ${c.a.anaes}`:''} (${c.a.doctor||'doctor not set'}).
+Conditions: ${cm.join(', ')||'none recorded'}. Allergies: ${c.v.allergies||'NOT RECORDED'}.
+Vitals: BP ${c.v.sbp||'?'}/${c.v.dbp||'?'}, pulse ${c.v.pulse||'?'}, SpO₂ ${c.v.spo2||'?'}%${e.bmi?`, BMI ${e.bmi.toFixed(1)}`:''}.
+Labs: ${labs||'none entered'}.
+Medicines (${e.meds.length}): ${e.meds.map(m=>`${m.n}${m.id&&m.id.g?` [${m.id.g}]`:''}`).join('; ')||(c.noMeds?'none':'not reconciled')}.
+Payer: ${payName(c)}${c.pay.mode!=='cash'?`, pre-auth ${c.pay.preauth.toLowerCase()}`:''}.
+
+For your decision (${open.length}):
+${open.map((f,i)=>`${i+1}. ${f.sev==='crit'?'[CRITICAL] ':''}${f.title} — ${f.detail}`).join('\n')||'Nothing open.'}
+
+Checklist ${e.score}% complete. Prepared by Setu; clinical decisions rest with the treating doctor.`;
+}
+function viewReview(){
+  const c=cur(), e=evaluate(c), pl=patientLines(c,state.lang);
+  const missCons = e.reqs.filter(r=>/consent/i.test(r.label)&&!r.done);
+  const canSign = !e.openCrit && !missCons.length && !c.finalized;
+  return `<div class="rv">
+    <div class="card" style="box-shadow:none"><div class="card-h"><h3>Readiness checklist</h3>${statusPill(e.status)}</div><div class="card-b">
+      ${e.reqs.map(r=>`<div class="req ${r.done?'y':'n'}"><span class="s">${r.done?'✓':'✕'}</span><span style="flex:1">${esc(r.label)}</span>${r.done?'':`<button class="btn sm ghost" data-act="go" data-s="${r.step}">Fix</button>`}</div>`).join('')}
+    </div></div>
+    <div class="card" style="box-shadow:none"><div class="card-h"><h3>✦ Doctor's pre-admission brief</h3><button class="btn sm" data-act="copy">Copy</button></div><div class="card-b brief" id="briefTxt">${esc(brief(c))}</div></div>
+    <div class="card" style="box-shadow:none"><div class="card-h"><h3>Patient instruction card</h3><div class="seg"><button type="button" class="${state.lang==='en'?'on':''}" data-lang="en">English</button><button type="button" class="${state.lang==='hi'?'on':''}" data-lang="hi">हिन्दी</button></div></div><div class="card-b">
+      <div class="pcard ${state.lang==='hi'?'hi':''}"><div class="top"><b>${esc(pl.title)}</b><small>${esc(state.home.name)}</small></div><ul>${pl.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div>
+      <div class="small muted" style="margin-top:8px">Generated from the form. Medicine advice is never generated: the card only tells the patient whom to ask.</div>
+    </div></div>
+    <div class="card" style="box-shadow:none"><div class="card-h"><h3>WhatsApp to ${esc(c.p.name.split(' ')[0]||'patient')}</h3><span class="small muted">${c.cons.dpdp?'consent recorded':'needs DPDP consent first'}</span></div><div class="card-b">
+      <div class="wa"><div class="msg ${state.lang==='hi'?'hi':''}">${esc(`${state.home.name}\n${pl.title}\n\n`+pl.lines.slice(0,4).join('\n'))}</div><div class="meta">${esc(state.home.name)} Care Connect · ✓✓</div></div>
+      <button class="btn sm" style="margin-top:10px" data-act="send" ${c.cons.dpdp&&/^[6-9]\d{9}$/.test(c.p.phone)?'':'disabled'}>Send to patient</button>
+    </div></div>
+  </div>
+  <div class="card" style="margin-top:16px;box-shadow:none"><div class="card-b" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div>${c.finalized?`<b style="color:var(--ok)">✓ Signed off for admission</b><div class="small muted">${esc(c.finalized)}</div>`:e.openCrit?`<b style="color:var(--crit)">${e.openCrit} critical flag${e.openCrit>1?'s':''} need a doctor's review before sign-off</b><div class="small muted">Open each one in the panel and record the decision.</div>`:missCons.length?`<b style="color:var(--warn)">Consents missing: ${missCons.map(r=>esc(r.label)).join(', ')}</b><div class="small muted">Sign-off unlocks once every required consent is recorded.</div>`:`<b>Ready for the doctor's sign-off</b><div class="small muted">${e.openWarn?`${e.openWarn} item${e.openWarn>1?'s':''} still to review · `:''}checklist ${e.score}%</div>`}</div>
+    <button class="btn primary" data-act="sign" ${canSign?'':'disabled'}>Sign off for admission</button>
+  </div></div>`;
+}
+
+/* ============ chat ============ */
+const KB=[
+  [/companion|follow.?up|whatsapp|triage|red flag/i, ()=>`The 90-day Companion: a coordinator calls on Day 3, 7, 30 and 90, ranked by Setu’s risk score (red-flag messages, missed refills, adherence below 80%, rising BP or sugar). Patient WhatsApp messages are triaged in seconds: chest pain, breathlessness, bleeding or fever go straight to the doctor and coordinator with advice to call 108. Setu never diagnoses or changes medicines.`],
+  [/discharge|summary/i, ()=>`Discharge AI drafts the summary, a morning/afternoon/night medicine timetable with an interaction check, and a Hindi or English patient card. The doctor edits and approves; then the nurse takes itemised DPDP consent and enrols the patient in the 90-day Companion.`],
+  [/ward|nursing note|documentation|in.?stay/i, ()=>`In-stay, Setu tracks NABH-style documentation (admission note, consents, medication chart, vitals, nursing notes, discharge plan) and due tasks, flags overdue ones, and drafts SBAR nursing notes for the nurse to check and sign.`],
+  [/pm.?jay|ayushman|arogya/i, c=>`For a PM-JAY admission:\n• The home must be empanelled (yours: ${state.home.pmjay?'yes':'no'}).\n• Verify the beneficiary and get the e-card at the Arogya Mitra desk.\n• Aadhaar copy.\n• Raise pre-authorisation for the package before a planned procedure.\nPackages and rates are fixed by NHA. Quality incentives (Bronze/Silver/Gold) depend on certification, which CareSetu can help prepare for but never guarantees.${c&&c.pay.mode==='pmjay'?`\n\n${c.p.name}: e-card ${c.pay.ecard?'verified':'NOT verified'}, pre-auth ${c.pay.preauth.toLowerCase()}.`:''}`],
+  [/fast|npo|nil by mouth|eat|khana/i, c=>{const n=c&&num(c.v.npo); const s=n&&shiftTime(c.a.time,n); return `General guide (ASA): no solid food for 6 hours and clear fluids up to 2 hours before anaesthesia. The anaesthetist sets the final instruction.${s?`\n\n${c.p.name}: procedure at ${c.a.time}; with ${n} h fasting, solids stop at ${s.t}${s.prev?' the night before':''}.`:''}`;}],
+  [/dpdp|privacy|data/i, ()=>`Under the DPDP Act and Rules 2025: itemised consent (care, WhatsApp follow-up, anonymised data use), withdrawal at any time, breach reporting within 72 hours. Patient data stays with the nursing home; Sun sees only anonymised totals.`],
+  [/consent/i, c=>{ if(!c) return 'Open a patient and I will list the consents they need.'; const e=evaluate(c); const cs=e.reqs.filter(r=>/consent/i.test(r.label)); return `${c.p.name} needs:\n${cs.map(r=>`${r.done?'✓':'✕'} ${r.label}`).join('\n')}\nTake each in the patient's language; the DPDP consent must be itemised and easy to withdraw.`; }],
+  [/clopidogrel|blood thinner|aspirin|ecosprin|clopilet/i, ()=>`Blood thinners before a procedure need a written stop/continue plan from the surgeon and anaesthetist; stopping them can be dangerous for heart patients. Clopidogrel with omeprazole or esomeprazole may reduce its effect (CYP2C19), so the prescriber may review the PPI. I flag; I never advise stopping a medicine.`],
+  [/nabh/i, ()=>`Setu builds the documentation the NABH entry-level standards expect: identity, allergy status, consents, medicine reconciliation and pre-procedure checks, each time-stamped. That helps readiness, but certification depends on the assessor. CareSetu never promises it.`],
+  [/anaemi|anemi|\bhb\b|haemoglobin|hemoglobin/i, ()=>`Pregnancy bands (WHO): mild 10–10.9, moderate 7–9.9, severe below 7 g/dL. Before surgery Setu flags Hb below 10 for review and below 8 as critical. The doctor decides on correction or blood.`],
+  [/follow|90|discharge|caresetu/i, c=>`CareSetu Companion: free 90-day follow-up after discharge for chronic and maternity patients, under ${state.home.name}'s name. Coordinator calls on Day 3, 7, 30 and 90, a teleconsult with the same doctor, refill reminders and red flags sent back to the home.${c?`\n\n${c.p.name}: ${eligibleFollow(c)?(c.cons.follow?'agreed ✓':'eligible, not yet offered'):'not in the pathway'}.`:''}`],
+  [/flag|summar|explain|patient|ready|status|what.*(wrong|missing)/i, c=>{ if(!c) return 'Open a patient and ask again: I will summarise what is open.'; const e=evaluate(c); const open=e.flags.filter(f=>!f.reviewed&&f.sev!=='info'); const miss=e.reqs.filter(r=>!r.done); return `${c.p.name||'This patient'} is "${e.status}" (${e.score}% of the checklist).\n\n${open.length?`To review:\n${open.slice(0,6).map(f=>`• ${f.sev==='crit'?'CRITICAL: ':''}${f.title}`).join('\n')}`:'No open flags.'}${miss.length?`\n\nMissing: ${miss.slice(0,5).map(r=>r.label).join(', ')}${miss.length>5?` and ${miss.length-5} more`:''}.`:''}`; }],
+];
+function answer(q){
+  const c = state.view==='case'?cur():null;
+  for(const [re,fn] of KB) if(re.test(q)) return fn(c);
+  return `I can help with: this patient's open flags, consents, fasting times, PM-JAY or cashless paperwork, blood thinners, anaemia, DPDP consent, NABH documentation and the 90-day follow-up.\n\n(Prototype: answers come from a fixed, reviewed knowledge base. Setu supports staff; it does not diagnose or prescribe.)`;
+}
+function chatAdd(who, text){ const b=$('#chatBody'); const d=document.createElement('div'); d.className='bub '+who; d.textContent=text; b.appendChild(d); b.scrollTop=b.scrollHeight; }
+function ask(q){ if(!q.trim()) return; chatAdd('me',q); const b=$('#chatBody'); const t=document.createElement('div'); t.className='bub ai'; t.innerHTML='<span class="thinking"><i></i><i></i><i></i></span>'; b.appendChild(t); b.scrollTop=b.scrollHeight; setTimeout(()=>{ t.remove(); chatAdd('ai',answer(q)); },650); }
+function renderSugs(){ const inCase=state.view==='case'; $('#sugs').innerHTML=(inCase?['What is open for this patient?','Which consents are missing?','Fasting times?','PM-JAY documents']:['PM-JAY documents','Fasting before surgery','What is DPDP consent?','How does 90-day follow-up work?']).map(s=>`<button data-sug="${esc(s)}">${esc(s)}</button>`).join(''); }
+
+/* ============ Sun CareSetu: journey modules ============ */
+const IC = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>',
+  pre:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v3h6V3M9 12l2 2 4-4"/></svg>',
+  ward:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V7M3 13h18v5M21 18v-3M7 13v-2a2 2 0 012-2h3v4"/></svg>',
+  dc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M9 15l2 2 4-4"/></svg>',
+  cp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>',
+  ins:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  acad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>',
+  how:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.4 5 5.6.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.6-.8z"/></svg>',
+  audit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg>',
+};
+
+/* ---------- ward (in-stay) ---------- */
+const WARD = [
+  {id:'W1', bed:'Bed 2', name:'Meena Joshi', age:45, sex:'F', dx:'Open inguinal hernia repair', day:'Post-op day 1', doctor:'Dr. A. Deshmukh', track:'surgery',
+   docs:{'Admission note':true,'Consent (procedure + anaesthesia)':true,'Medication chart':true,'Vitals 4-hourly':true,'Nursing notes each shift':false,'Discharge plan started':false},
+   tasks:[{t:'Mobilise and check wound site',due:'10:00',sev:'warn',done:false},{t:'Pain score before evening dose',due:'18:00',sev:'info',done:false},{t:'Start discharge teaching: wound care, red flags',due:'Today',sev:'info',done:false}],
+   vitals:'BP 124/80 · HR 78 · T 37.1 °C · SpO₂ 99%'},
+  {id:'W2', bed:'Bed 4', name:'Mohan Lal', age:66, sex:'M', dx:'NSTEMI, medically managed; diabetes, hypertension', day:'Day 4', doctor:'Dr. R. Shaikh', track:'cardiac',
+   docs:{'Admission note':true,'Consent (procedure + anaesthesia)':true,'Medication chart':true,'Vitals 4-hourly':false,'Nursing notes each shift':true,'Discharge plan started':true},
+   tasks:[{t:'Vitals overdue by 6 h: record BP, pulse, SpO₂',due:'Overdue',sev:'crit',done:false},{t:'2 blood sugar checks pending on sliding scale',due:'12:00',sev:'warn',done:false},{t:'Discharge today: AI summary drafted, needs doctor review',due:'Today',sev:'info',done:false}],
+   vitals:'Last: BP 138/86 · HR 72 · SpO₂ 97% (6 h ago)'},
+  {id:'W3', bed:'Bed 7', name:'Kavita Sharma', age:31, sex:'F', dx:'Elective LSCS, healthy baby girl', day:'Post-op day 3', doctor:'Dr. S. Kulkarni', track:'maternity',
+   docs:{'Admission note':true,'Consent (procedure + anaesthesia)':true,'Medication chart':true,'Vitals 4-hourly':true,'Nursing notes each shift':true,'Discharge plan started':false},
+   tasks:[{t:'Breastfeeding check and baby weight',due:'09:00',sev:'info',done:true},{t:'Hb before discharge (was 9.8 pre-op)',due:'11:00',sev:'warn',done:false},{t:'Danger-sign counselling for mother + baby',due:'Before discharge',sev:'warn',done:false}],
+   vitals:'BP 118/76 · HR 84 · T 36.9 °C'},
+];
+const docScore = w => Math.round(Object.values(w.docs).filter(Boolean).length / Object.keys(w.docs).length * 100);
+function ring(pct, size=54, col='var(--saffron)'){
+  const r=size/2-5, C=2*Math.PI*r;
+  return `<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="var(--line)" stroke-width="6" fill="none"/><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="${col}" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct/100)}"/></svg><b style="font-size:${size>60?15:12}px">${pct}%</b></div>`;
+}
+function viewWard(){
+  return `<div class="banner"><div><b>✦ Setu in-stay assistant</b> watches documentation and due tasks for every admitted patient, and drafts nursing notes. Nurses tick; Setu never changes orders.</div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(360px,1fr))">${WARD.map(w=>{
+    const sc=docScore(w), open=w.tasks.filter(t=>!t.done);
+    return `<div class="card"><div class="card-h"><h3>${esc(w.bed)} · ${esc(w.name)} <span class="hsub">${w.age} ${w.sex}</span></h3><span class="pill neutral">${esc(w.day)}</span></div>
+    <div class="card-b"><div style="display:flex;gap:14px;align-items:center;margin-bottom:10px">${ring(sc)}<div><div><b>${esc(w.dx)}</b></div><div class="small muted">${esc(w.doctor)} · ${esc(w.vitals)}</div></div></div>
+    <div class="sublbl">Documentation (NABH-ready)</div>
+    <div class="checks" style="margin-bottom:10px">${Object.entries(w.docs).map(([k,v])=>`<label class="chk ${v?'on':''}"><input type="checkbox" data-wdoc="${w.id}|${esc(k)}" ${v?'checked':''}>${esc(k)}</label>`).join('')}</div>
+    <div class="sublbl">Setu tasks · ${open.length} open</div>
+    ${w.tasks.map((t,i)=>`<div class="task ${t.sev} ${t.done?'done':''}"><input type="checkbox" data-wtask="${w.id}|${i}" ${t.done?'checked':''}><span class="tt">${esc(t.t)}</span><span class="due">${esc(t.due)}</span></div>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn sm" data-act="wnote" data-id="${w.id}">✦ Draft nursing note</button>${DC[w.id]?`<button class="btn sm ghost" data-act="todc" data-id="${w.id}">Go to discharge →</button>`:''}</div>
+    <div class="note" id="note-${w.id}"></div></div></div>`;}).join('')}</div>`;
+}
+function nursingNote(w){
+  const open=w.tasks.filter(t=>!t.done).map(t=>t.t.toLowerCase());
+  const miss=Object.entries(w.docs).filter(([,v])=>!v).map(([k])=>k.toLowerCase());
+  return `SBAR note · ${w.bed} · ${w.name}, ${w.age} ${w.sex} · ${nowStamp()}
+S: ${w.day}, ${w.dx}.
+B: Under ${w.doctor}.
+A: ${w.vitals}.${open.length?` Pending: ${open.join('; ')}.`:' No pending tasks.'}
+R: ${miss.length?`Complete documentation: ${miss.join(', ')}. `:''}Continue as per treating doctor’s orders.
+— Drafted by Setu for the nurse to check and sign.`;
+}
+
+/* ---------- discharge AI ---------- */
+const DC = {
+  W2:{dx:'Non-ST elevation myocardial infarction (NSTEMI), medically managed. Type 2 diabetes. Hypertension.', course:'Admitted with chest pain; ECG and troponin consistent with NSTEMI. Managed medically; pain-free from day 2. Echo: EF 50%. Sugars controlled on insulin, switched back to oral agents.', track:'Chronic: post-cardiac + diabetes',
+      meds:[['Ecosprin 75','1 tab','after lunch','✔','',''],['Clopidogrel 75','1 tab','after breakfast','✔','',''],['Atorvastatin 80','1 tab','at night','','','✔'],['Metoprolol 25','1 tab','twice daily','✔','','✔'],['Ramipril 2.5','1 tab','morning','✔','',''],['Pantoprazole 40','1 tab','before breakfast','✔','',''],['Istamet 50/500','1 tab','twice daily','✔','','✔'],['Sorbitrate 5 SL','1 tab','only for chest pain','','','']],
+      follow:'Review at Shree Sai Nursing Home on Day 7 (teleconsult) and Day 30 (in person). HbA1c and lipids at 6 weeks.', flags:'Chest pain more than 5 minutes or not relieved by one Sorbitrate, breathlessness, fainting, very low or very high sugar.', lang:'Hindi'},
+  W3:{dx:'Elective lower-segment caesarean section (repeat). Mild anaemia. Healthy female baby, 3.1 kg.', course:'Uneventful surgery under spinal anaesthesia. Wound healthy. Breastfeeding established. Hb 9.8 g/dL.', track:'Mother after C-section',
+      meds:[['Orofer XT','1 tab','after lunch','','✔',''],['Shelcal 500','1 tab','after dinner','','','✔'],['Paracetamol 650','1 tab','if pain, up to 3 a day','✔','✔','✔'],['Cefuroxime 500','1 tab','twice daily × 5 days','✔','','✔']],
+      follow:'Wound check at the nursing home on Day 7. Day-42 review: contraception counselling, baby’s vaccination schedule. Hb recheck at 4 weeks.', flags:'Heavy bleeding, fever, wound discharge, severe headache or blurred vision, baby not feeding or yellow skin.', lang:'Hindi'},
+};
+function dcChecks(id){
+  const meds=DC[id].meds.map(m=>({n:m[0],id:identify(m[0])})); const out=[];
+  const cls=c=>meds.filter(m=>m.id&&m.id.c.includes(c));
+  ['biguanide','arb','acei','statin','ppi','nsaid','anticoag','p2y12'].forEach(c=>{ if(cls(c).length>1) out.push(['warn',`Two ${CLASS_NAME[c]}s: ${cls(c).map(m=>m.n).join(', ')}`]); });
+  if(cls('p2y12').length && cls('cyp2c19ppi').length) out.push(['warn','Clopidogrel with omeprazole/esomeprazole: prescriber to review PPI']);
+  if(cls('p2y12').length && cls('ppi').length && !cls('cyp2c19ppi').length) out.push(['ok','Clopidogrel with pantoprazole: no CYP2C19 conflict']);
+  if(cls('nsaid').length && (cls('antiplatelet').length||cls('anticoag').length)) out.push(['warn','NSAID with a blood thinner']);
+  const unk=meds.filter(m=>m.id&&!m.id.g); if(unk.length) out.push(['info',`Pharmacist to verify: ${unk.map(m=>m.n).join(', ')}`]);
+  if(!out.filter(o=>o[0]==='warn').length) out.unshift(['ok','No duplicate drug classes or known interactions found']);
+  return out;
+}
+function viewDischarge(){
+  const ids=Object.keys(DC).filter(id=>!state.dcDone[id]); if(!state.dcSel||!DC[state.dcSel]) state.dcSel=ids[0]||'W2';
+  const id=state.dcSel, w=WARD.find(x=>x.id===id), d=DC[id], done=state.dcDone[id];
+  const lang=state.dcLang||'en';
+  const card = lang==='hi'
+    ? [`घर जाने के बाद · ${w.name}`, `अपनी दवाइयाँ रोज़ समय पर लें; खुद से बंद न करें।`, `डॉक्टर से अगली बात: दिन 7 (वीडियो कॉल), दिन 30 (अस्पताल)।`, `हमारी टीम 90 दिन तक WhatsApp और फ़ोन पर साथ रहेगी — मुफ़्त।`, `तुरंत आएं / 108 पर कॉल करें: ${id==='W2'?'सीने में दर्द 5 मिनट से ज़्यादा, साँस फूलना, बेहोशी':'ज़्यादा खून बहना, बुखार, टांकों से पस, बच्चा दूध न पिए'}।`]
+    : [`After you go home · ${w.name}`, 'Take your medicines every day on time; do not stop them on your own.', 'Next with your doctor: Day 7 (video call), Day 30 (at the nursing home).', 'Our team stays with you for 90 days on WhatsApp and phone, free.', `Come in at once / call 108: ${d.flags}`];
+  return `<div class="banner"><div><b>✦ Setu discharge assistant</b> drafts the discharge summary, the medicine timetable and the patient’s card from the stay record. The doctor edits and approves; then the nurse enrols the patient in the 90-day Companion.</div></div>
+  <div class="seg" style="margin-bottom:14px">${Object.keys(DC).map(k=>{const x=WARD.find(y=>y.id===k);return `<button class="${k===id?'on':''}" data-act="pickdc" data-id="${k}">${esc(x.bed)} · ${esc(x.name)} ${state.dcDone[k]?'✓':''}</button>`;}).join('')}</div>
+  <div class="ws"><div class="grid">
+    <div class="card"><div class="card-h"><h3>✦ Discharge summary (AI draft)</h3><span class="pill ${state.dcApproved[id]?'ok':'warn'}">${state.dcApproved[id]?'Approved by doctor':'Draft · needs doctor review'}</span></div><div class="card-b">
+      <div class="f" style="margin-bottom:8px"><label>Diagnosis</label><textarea rows="2">${esc(d.dx)}</textarea></div>
+      <div class="f" style="margin-bottom:8px"><label>Hospital course</label><textarea rows="3">${esc(d.course)}</textarea></div>
+      <div class="sublbl">Medicines at discharge · timetable</div>
+      <div class="tablewrap"><table class="q mt"><thead><tr><th>Medicine (any brand)</th><th>Generic · class</th><th>How</th><th>🌅</th><th>☀️</th><th>🌙</th></tr></thead><tbody>${d.meds.map(m=>{const g=identify(m[0]);return `<tr><td><b>${esc(m[0])}</b> ${esc(m[1])}</td><td class="small">${g&&g.g?esc(g.g):'<span style="color:var(--warn)">verify</span>'}</td><td class="small">${esc(m[2])}</td><td>${m[3]}</td><td>${m[4]}</td><td>${m[5]}</td></tr>`;}).join('')}</tbody></table></div>
+      <div class="sublbl" style="margin-top:10px">Setu medicine check</div>
+      ${dcChecks(id).map(([s,t])=>`<div class="mini ${s}">${s==='ok'?'✓':s==='warn'?'!':'i'} ${esc(t)}</div>`).join('')}
+      <div class="f" style="margin-top:10px"><label>Follow-up plan</label><textarea rows="2">${esc(d.follow)}</textarea></div>
+      <div class="f" style="margin-top:8px"><label>Red flags to explain</label><textarea rows="2">${esc(d.flags)}</textarea></div>
+      <div style="display:flex;gap:8px;margin-top:12px"><button class="btn navy" data-act="approve" data-id="${id}" ${state.dcApproved[id]?'disabled':''}>Doctor approves summary</button><button class="btn" data-act="printdc">Print / share PDF</button></div>
+    </div></div>
+  </div>
+  <aside class="grid" style="align-content:start">
+    <div class="card"><div class="card-h"><h3>Patient card</h3><div class="seg"><button class="${lang==='en'?'on':''}" data-act="dclang" data-l="en">English</button><button class="${lang==='hi'?'on':''}" data-act="dclang" data-l="hi">हिन्दी</button></div></div><div class="card-b">
+      <div class="pcard ${lang==='hi'?'hi':''}"><div class="top"><b>${esc(card[0])}</b><small>${esc(state.home.name)}</small></div><ul>${card.slice(1).map(l=>`<li>${esc(l)}</li>`).join('')}</ul></div></div></div>
+    <div class="card"><div class="card-h"><h3>Enrol in 90-day Companion</h3><span class="pill ok">Eligible · ${esc(d.track)}</span></div><div class="card-b">
+      ${done?`<div class="mini ok">✓ Enrolled ${esc(done)}. Day 3 call scheduled; first WhatsApp sent in ${esc(d.lang)}.</div>`:`
+      <div class="small muted" style="margin-bottom:8px">DPDP itemised consent, in the patient’s language. Each item can be withdrawn any time.</div>
+      <div class="checks" style="flex-direction:column;align-items:stretch">${[['care','Use my health data for my care and follow-up'],['wa','Send reminders and calls on WhatsApp / phone'],['agg','Use anonymised totals to improve the programme']].map(([k,l])=>`<label class="chk ${state.dcCons[id+k]?'on':''}"><input type="checkbox" data-dccons="${id}${k}" ${state.dcCons[id+k]?'checked':''}>${l}</label>`).join('')}</div>
+      <button class="btn primary" style="margin-top:12px;width:100%;justify-content:center" data-act="enrol" data-id="${id}" ${state.dcApproved[id]&&state.dcCons[id+'care']&&state.dcCons[id+'wa']?'':'disabled'}>Enrol and send first WhatsApp</button>
+      <div class="small muted" style="margin-top:6px">Needs: doctor approval + care + WhatsApp consent. Data consent is optional.</div>`}
+    </div></div>
+  </aside></div>`;
+}
+
+/* ---------- 90-day Companion ---------- */
+const CP = [
+  {id:'P1', name:'Sunil Kale', age:58, sex:'M', track:'Post-MI', day:6, lang:'Marathi', pdc:92, refill:'OK · 24 days left', bp:[148,142,138,136,134,140], risk:0, flags:[], thread:[['ai','नमस्कार सुनील जी! Sun CareSetu (Shree Sai Nursing Home) से। आज की दवाइयाँ ली? ✅ / ❌'],['me','✅ ली'],['ai','बहुत अच्छा! कल सुबह BP नापकर यहाँ भेजें।']]},
+  {id:'P2', name:'Lata Pawar', age:52, sex:'F', track:'Diabetes', day:21, lang:'Hindi', pdc:68, refill:'Pack ended 2 days ago', sug:[182,176,190,205,214], risk:0, flags:[], thread:[['ai','लता जी, आपकी दवा का पैक 2 दिन पहले खत्म हो गया। पास की दुकान पर value pack तैयार है। क्या मँगवा दें?'],['ai','(no reply for 2 days)']]},
+  {id:'P3', name:'Pooja Shinde', age:26, sex:'F', track:'Post-C-section', day:10, lang:'Hindi', pdc:95, refill:'Iron: 20 days left', risk:0, flags:[], thread:[['ai','पूजा जी, टांकों पर कोई सूजन या पस? बच्चा ठीक से दूध पी रहा है?'],['me','सब ठीक है, धन्यवाद']]},
+  {id:'P4', name:'Anwar Khan', age:63, sex:'M', track:'Hypertension', day:45, lang:'Hindi', pdc:81, refill:'OK · 12 days left', bp:[138,142,149,156,162,168], risk:0, flags:[], thread:[['me','BP 168/98 aaj subah'],['ai','धन्यवाद अनवर जी, reading दर्ज हो गई। आपके coordinator आज कॉल करेंगे।']]},
+  {id:'P5', name:'Geeta Rao', age:70, sex:'F', track:'Post-MI', day:85, lang:'English', pdc:97, refill:'OK · 18 days left', bp:[132,128,126,128,124,126], risk:0, flags:[], thread:[['ai','Geeta ji, 5 days to your Day-90 review at the nursing home. Shall we book Thursday 11 am?'],['me','Yes please']]},
+];
+function cpRisk(p){
+  let s=0, why=[];
+  if(p.flags.some(f=>f.sev==='crit')){ s+=60; why.push('red-flag message'); }
+  if(p.pdc<80){ s+=20; why.push(`adherence ${p.pdc}%`); }
+  if(/ended|overdue/i.test(p.refill)){ s+=15; why.push('refill missed'); }
+  const arr=p.bp||p.sug||[]; if(arr.length>2 && arr.at(-1)-arr[0]>15){ s+=15; why.push(p.bp?'BP rising':'sugar rising'); }
+  if(p.thread.some(m=>/no reply/.test(m[1]))){ s+=10; why.push('no reply'); }
+  if([3,7,30,42,90].some(d=>Math.abs(p.day-d)<=1)){ s+=8; why.push(`Day ${p.day} touchpoint`); }
+  return {s:Math.min(99,s), why, level:s>=50?'High':s>=25?'Medium':'Low'};
+}
+function spark(arr, hi){ if(!arr||!arr.length) return ''; const w=180,h=46,mn=Math.min(...arr)-8,mx=Math.max(...arr)+8; const pts=arr.map((v,i)=>`${(i/(arr.length-1))*w},${h-(v-mn)/(mx-mn)*h}`).join(' ');
+  const yh=h-(hi-mn)/(mx-mn)*h; return `<svg width="${w}" height="${h+4}" viewBox="0 -2 ${w} ${h+4}"><line x1="0" x2="${w}" y1="${yh}" y2="${yh}" stroke="var(--crit)" stroke-dasharray="3 3" stroke-width="1"/><polyline points="${pts}" fill="none" stroke="var(--info)" stroke-width="2"/>${arr.map((v,i)=>`<circle cx="${(i/(arr.length-1))*w}" cy="${h-(v-mn)/(mx-mn)*h}" r="2.5" fill="var(--info)"/>`).join('')}</svg>`; }
+const TRIAGE=[
+  {re:/chest|सीने|छाती|heaviness|भारी|breath|साँस|सांस|faint|बेहोश|unconscious/i, sev:'crit', reply:'This could be serious. Please call 108 now or come to the nursing home immediately. I have alerted your doctor and coordinator.', tag:'Possible cardiac / breathing emergency'},
+  {re:/bleed|खून|fever|बुखार|pus|पस|wound|टांक/i, sev:'crit', reply:'Please come to the nursing home today. I have informed the doctor and your coordinator will call you within 15 minutes.', tag:'Post-op / maternal red flag'},
+  {re:/bp\s*(\d{2,3})\s*\/\s*(\d{2,3})/i, sev:'bp'},
+  {re:/sugar\s*(\d{2,3})|शुगर\s*(\d{2,3})/i, sev:'sugar'},
+  {re:/miss|भूल|forgot|nahi li|नहीं ली|❌/i, sev:'warn', reply:'Thank you for telling us. Please do not take a double dose. Your coordinator will call you today to help plan your doses.', tag:'Missed dose'},
+  {re:/refill|दवा खत्म|khatam|pack/i, sev:'warn', reply:'Your value pack is ready at your nearby chemist. Shall we ask them to keep it for you? (Yes / No)', tag:'Refill'},
+];
+function triage(p, msg){
+  p.thread.push(['me',msg]);
+  for(const r of TRIAGE){ const m=msg.match(r.re); if(!m) continue;
+    if(r.sev==='bp'){ const sy=+m[1], di=+m[2]; (p.bp=p.bp||[]).push(sy); if(sy>=180||di>=110){ p.flags.push({sev:'crit',t:`BP ${sy}/${di} reported`,at:nowStamp()}); p.thread.push(['ai',`BP ${sy}/${di} is very high. Please sit and rest, recheck in 15 minutes. I have alerted your doctor; your coordinator will call now.`]); }
+      else if(sy>=150||di>=95){ p.flags.push({sev:'warn',t:`BP ${sy}/${di} above target`,at:nowStamp()}); p.thread.push(['ai',`Reading saved: ${sy}/${di}. It is above your target, so your coordinator will review it today.`]); }
+      else p.thread.push(['ai',`Reading saved: ${sy}/${di}. Well done, keep it up!`]); return; }
+    if(r.sev==='sugar'){ const v=+(m[1]||m[2]); (p.sug=p.sug||[]).push(v); if(v<70||v>300){ p.flags.push({sev:'crit',t:`Sugar ${v} reported`,at:nowStamp()}); p.thread.push(['ai',v<70?'Your sugar is low. Take 3 teaspoons of sugar or glucose in water now and recheck in 15 minutes. Your coordinator is calling you.':'Your sugar is very high. Your doctor has been alerted and your coordinator will call you now.']); } else p.thread.push(['ai',`Sugar ${v} saved. Thank you!`]); return; }
+    p.flags.push({sev:r.sev,t:r.tag,at:nowStamp()}); p.thread.push(['ai',r.reply]);
+    if(r.sev==='crit') state.audit.push({t:nowStamp(),who:'Setu triage',what:`${p.name} · red flag "${r.tag}" escalated to doctor and coordinator`});
+    return; }
+  p.thread.push(['ai','Thank you! I have noted this for your coordinator. For anything urgent, call 108 or the nursing home.']);
+}
+function viewCompanion(){
+  const list=[...CP].sort((a,b)=>cpRisk(b).s-cpRisk(a).s); if(!state.cpSel) state.cpSel=list[0].id;
+  const p=CP.find(x=>x.id===state.cpSel), r=cpRisk(p);
+  const tl=[0,3,7,30,42,90].map(d=>({d, st:d<p.day?'done':Math.abs(d-p.day)<=1?'now':'next'}));
+  const crit=CP.reduce((a,x)=>a+x.flags.filter(f=>f.sev==='crit').length,0);
+  return `<div class="grid kpis" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px">
+    <div class="card kpi"><div class="l">Active in 90-day Companion</div><div class="v">38</div><div class="d">5 shown in this demo</div></div>
+    <div class="card kpi"><div class="l">Calls due today (AI-ranked)</div><div class="v">7</div><div class="d">coordinator Priya · hub Nagpur</div></div>
+    <div class="card kpi"><div class="l">Red flags today</div><div class="v" style="color:var(--crit)">${crit}</div><div class="d">escalated to the treating doctor</div></div>
+    <div class="card kpi"><div class="l">Average adherence (PDC)</div><div class="v">${Math.round(CP.reduce((a,x)=>a+x.pdc,0)/CP.length)}%</div><div class="d">target ≥ 80%</div></div></div>
+  <div class="cp3">
+    <div class="card"><div class="card-h"><h3>✦ Today’s call list</h3><span class="small hsub">ranked by Setu risk</span></div>${list.map(x=>{const k=cpRisk(x);return `<div class="qrow ${x.id===p.id?'on':''}" data-act="pickcp" data-id="${x.id}"><div><b>${esc(x.name)}</b> <span class="small muted">${x.age}${x.sex} · ${esc(x.track)} · Day ${x.day}</span><div class="small muted">${k.why.join(' · ')||'routine check'}</div></div><span class="pill ${k.level==='High'?'crit':k.level==='Medium'?'warn':'ok'}">${k.level} ${k.s}</span></div>`;}).join('')}</div>
+    <div class="card"><div class="card-h"><h3>${esc(p.name)} · Day ${p.day} of 90</h3><span class="pill ${r.level==='High'?'crit':r.level==='Medium'?'warn':'ok'}">${r.level} risk</span></div><div class="card-b">
+      <div class="tl">${tl.map(t=>`<div class="tl-i ${t.st}"><i></i><span>Day ${t.d}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:16px;align-items:center;margin:12px 0">${ring(p.pdc,70,p.pdc<80?'var(--crit)':'var(--ok)')}<div><div class="small muted">Adherence (proportion of days covered)</div><div><b>Refill:</b> ${esc(p.refill)}</div><div class="small muted">Language: ${esc(p.lang)} · own doctor: Dr. R. Shaikh</div></div></div>
+      ${p.bp?`<div class="sublbl">Home BP (systolic) · red line = 150</div>${spark(p.bp,150)}`:''}${p.sug?`<div class="sublbl">Fasting sugar · red line = 180</div>${spark(p.sug,180)}`:''}
+      <div class="sublbl" style="margin-top:8px">Flags</div>${p.flags.length?p.flags.map(f=>`<div class="mini ${f.sev==='crit'?'crit':'warn'}">${f.sev==='crit'?'!':'?'} ${esc(f.t)} · ${esc(f.at)}</div>`).join(''):'<div class="small muted">None today.</div>'}
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn sm primary" data-act="logcall" data-id="${p.id}">Log coordinator call</button><button class="btn sm" data-act="tele" data-id="${p.id}">Book teleconsult with own doctor</button><button class="btn sm" data-act="refillgo" data-id="${p.id}">Reserve refill at chemist</button></div>
+    </div></div>
+    <div class="card wa-card"><div class="card-h"><h3>WhatsApp · ${esc(p.name.split(' ')[0])}</h3><span class="small hsub">${esc(state.home.name)} Care Connect</span></div>
+      <div class="wa-body" id="waBody">${p.thread.map(([w,t])=>`<div class="wm ${w==='ai'?'bot':'me'}">${esc(t)}</div>`).join('')}</div>
+      <div class="sugs">${['सीने में भारीपन है','BP 150/94','Sugar 62','Dawa bhool gaya','Refill chahiye'].map(s=>`<button data-act="simsug" data-t="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+      <form class="chat-in" id="waForm"><input id="waIn" placeholder="Type as the patient (test the AI triage)…" autocomplete="off"><button class="btn primary sm">Send</button></form>
+      <div class="small muted" style="padding:6px 12px 10px">Setu triages messages: red flags go to the doctor and coordinator in seconds. It never diagnoses or changes medicines.</div></div>
+  </div>`;
+}
+
+/* ---------- Insight ---------- */
+const INS = { months:['May','Jun','Jul','Aug','Sep','Oct'], enrol:[8,14,19,24,28,33], fu30:[72,78,83,85,88,90], readm:{you:2.4,base:4.1,peer:3.3}, doc:{now:92,base:61}, refill:81, trained:[14,18], nabh:64 };
+function bars(vals, labels, max, col='var(--saffron)'){ return `<div class="bars">${vals.map((v,i)=>`<div class="bc"><span class="bv">${v}</span><i style="height:${v/max*100}%;background:${col}"></i><span class="bl">${labels[i]}</span></div>`).join('')}</div>`; }
+function viewInsight(){
+  const I2=INS;
+  return `<div class="banner"><div><b>Owner dashboard</b> · ${esc(state.home.name)} · consented, aggregated data only · <i>illustrative demo numbers</i></div><button class="btn sm primary" data-act="report">✦ Generate insurer outcome report</button></div>
+  <div class="grid kpis" style="margin-bottom:16px">
+    <div class="card kpi"><div class="l">Patients enrolled (6 mo)</div><div class="v">126</div><div class="d">78% of eligible discharges</div></div>
+    <div class="card kpi"><div class="l">30-day follow-up done</div><div class="v">${I2.fu30.at(-1)}%</div><div class="d">from 72% in May</div></div>
+    <div class="card kpi"><div class="l">30-day readmissions</div><div class="v" style="color:var(--ok)">${I2.readm.you}%</div><div class="d">baseline ${I2.readm.base}% · peers ${I2.readm.peer}%</div></div>
+    <div class="card kpi"><div class="l">On-time refills</div><div class="v">${I2.refill}%</div><div class="d">value packs at 6 chemists</div></div>
+    <div class="card kpi"><div class="l">Documentation complete</div><div class="v">${I2.doc.now}%</div><div class="d">from ${I2.doc.base}% at baseline audit</div></div>
+    <div class="card kpi"><div class="l">Staff CareSetu-trained</div><div class="v">${I2.trained[0]}/${I2.trained[1]}</div><div class="d">nurses + front desk</div></div></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+    <div class="card"><div class="card-h"><h3>Enrolments a month</h3></div><div class="card-b">${bars(I2.enrol,I2.months,36)}</div></div>
+    <div class="card"><div class="card-h"><h3>30-day follow-up completion (%)</h3></div><div class="card-b">${bars(I2.fu30,I2.months,100,'#F7A541')}</div></div>
+    <div class="card"><div class="card-h"><h3>Readmissions vs baseline and peers</h3></div><div class="card-b">${bars([I2.readm.base,I2.readm.peer,I2.readm.you],['Baseline','Peer median','You'],5,'var(--ok)')}<div class="small muted">Peer median: anonymised homes in the CareSetu network.</div></div></div>
+    <div class="card"><div class="card-h"><h3>✦ Setu’s quarterly summary</h3></div><div class="card-b brief" id="insSum">Follow-up completion rose from 72% to 90% since May, and 30-day readmissions are 2.4% against a 4.1% baseline, better than the peer median of 3.3%. Refills on time are the weakest link at 81%: three chemists near Kamptee run out of value packs; ask the key-account manager to add stock. Documentation completeness is 92% (61% at the baseline audit). Four of 18 staff still need the Academy course. Suggested focus for next quarter: refill reliability and maternal Day-42 attendance.</div></div>
+  </div>`;
+}
+
+/* ---------- Academy & Quality ---------- */
+const STAFF=[['Sister Anita','Head nurse',[100,100,100,80,100,60]],['Nurse Ravina','Ward nurse',[100,80,60,40,100,20]],['Nurse Sameer','Ward nurse',[60,40,40,0,20,0]],['Kiran','Front desk',[100,0,0,0,0,0]]];
+const MODS=['Documentation','Medication safety','Infection control + waste','Discharge counselling','Maternal danger signs','Chronic-disease basics'];
+const NABH=[['AAC','Access, assessment and continuity of care',72],['COP','Care of patients',68],['MOM','Management of medication',81],['PRE','Patient rights and education',59],['HIC','Hospital infection control',64],['PSQ','Patient safety and quality improvement',48],['ROM','Responsibilities of management',55],['FMS','Facility management and safety',62],['HRM','Human resource management',70],['IMS','Information management system',77]];
+function viewAcademy(){
+  return `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">
+  <div class="card"><div class="card-h"><h3>CareSetu Academy · staff progress</h3><span class="small hsub">3 days + 6 mentoring visits (Manyata model)</span></div><div class="card-b">
+    <div class="tablewrap"><table class="q mt"><thead><tr><th>Staff</th>${MODS.map(m=>`<th class="small">${esc(m)}</th>`).join('')}</tr></thead><tbody>${STAFF.map(([n,r,p])=>`<tr><td><b>${esc(n)}</b><div class="small muted">${esc(r)}</div></td>${p.map(v=>`<td><div class="bar" style="width:52px"><i style="width:${v}%;background:${v===100?'var(--ok)':'var(--saffron)'}"></i></div><span class="small">${v}%</span></td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="sublbl" style="margin-top:12px">SOP library (brand-neutral)</div>
+    <div class="checks">${['Admission + consent','Medication safety','Infection control','Biomedical waste','Discharge + counselling','Maternal danger signs','Fall prevention','Documentation standards'].map(x=>`<span class="pill neutral">📄 ${x}</span>`).join('')}</div>
+    <div class="mini ok" style="margin-top:12px">✓ Next mentoring visit: Thursday · quality coach Meera · focus: nursing notes each shift</div></div></div>
+  <div class="card"><div class="card-h"><h3>NABH entry-level readiness (optional add-on)</h3><span class="small hsub">${Math.round(NABH.reduce((a,x)=>a+x[2],0)/NABH.length)}% overall</span></div><div class="card-b">
+    ${NABH.map(([c,n,v])=>`<div class="nrow"><b>${c}</b><span>${esc(n)}</span><div class="bar" style="width:120px"><i style="width:${v}%;background:${v>=70?'var(--ok)':v>=55?'var(--saffron)':'var(--crit)'}"></i></div><span class="small">${v}%</span></div>`).join('')}
+    <div class="mini warn" style="margin-top:10px">✦ Setu gap finder: 7 documents missing, mostly in PSQ (incident register, quality indicators) and PRE (patient rights display, feedback log).</div>
+    <div class="small muted" style="margin-top:8px">Readiness support only. Sun is not an accreditation body; certification is decided by NABH assessors.</div></div></div>
+  </div>`;
+}
+
+/* ---------- Home: journey overview ---------- */
+function viewHome(){
+  const ev=state.cases.map(c=>({c,e:evaluate(c)}));
+  const notReady=ev.filter(x=>!x.c.finalized&&x.e.status==='Not ready');
+  const wardOpen=WARD.reduce((a,w)=>a+w.tasks.filter(t=>!t.done&&t.sev==='crit').length,0);
+  const dcDue=Object.keys(DC).filter(k=>!state.dcDone[k]).length;
+  const red=CP.filter(p=>cpRisk(p).level==='High');
+  const stage=(k,ic,t,n,s,cls='')=>`<div class="stage ${cls}" data-nav="${k}"><div class="si">${ic}</div><div class="sn">${n}</div><div class="st">${t}</div><div class="ss">${s}</div></div>`;
+  const brief=[
+    notReady.length?[`pre`,`${notReady.length} pre-admission not ready: ${notReady.map(x=>x.c.p.name).join(', ')} (${notReady[0].e.flags.filter(f=>f.sev==='crit').slice(0,2).map(f=>f.title).join('; ')})`,'crit']:null,
+    wardOpen?[`ward`,`In-stay: ${wardOpen} overdue task · ${WARD.filter(w=>w.tasks.some(t=>!t.done&&t.sev==='crit')).map(w=>w.bed+' '+w.name).join(', ')} vitals overdue`,'warn']:null,
+    dcDue?[`dc`,`${dcDue} discharges today: summaries drafted, waiting for doctor approval and enrolment`,'info']:null,
+    red.length?[`cp`,`Companion: ${red.length} high-risk patient(s) to call first: ${red.map(p=>p.name).join(', ')}`,'warn']:[`cp`,'Companion: 7 calls due today; Lata Pawar missed a refill','warn'],
+    [`ins`,'Insight: readmissions 2.4% vs 4.1% baseline; refills on time is the weakest link (81%)','ok'],
+  ].filter(Boolean);
+  return `<div class="hero"><div><div class="eyebrow">Sun CareSetu · ${esc(state.home.tier)}</div><h2>Good morning, ${esc(state.home.name)}</h2><p>Setu AI follows every patient from booking to Day 90: checks before admission, documentation in the ward, the discharge pack, and 90 days of follow-up.</p></div><div class="hero-n"><b>${CP.length+33}</b><span>patients on the bridge today</span></div></div>
+  <div class="journey">${stage('pre',IC.pre,'Pre-admit AI',state.cases.length,`${notReady.length} not ready`, notReady.length?'alert':'')}${stage('ward',IC.ward,'In-stay',WARD.length,`${wardOpen} overdue task`, wardOpen?'alert':'')}${stage('dc',IC.dc,'Discharge AI',dcDue,'due today')}${stage('cp',IC.cp,'90-day Companion',38,`${red.length} high risk`, red.length?'alert':'')}${stage('ins',IC.ins,'Insight','90%','30-day follow-up')}</div>
+  <div class="grid" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);margin-top:16px" id="homeGrid">
+    <div class="card"><div class="card-h"><h3>✦ Setu’s morning briefing</h3><span class="small hsub">${nowStamp()}</span></div><div class="card-b">${brief.map(([k,t,s])=>`<div class="brow ${s}" data-nav="${k}"><span class="bdot"></span><span>${esc(t)}</span><span class="go">Open →</span></div>`).join('')}</div></div>
+    <div class="card"><div class="card-h"><h3>Where the AI works</h3></div><div class="card-b ailist">
+      ${[['Pre-admit','60+ safety and paperwork checks before the patient arrives'],['In-stay','Documentation gaps, overdue tasks, SBAR nursing notes'],['Discharge','Drafts summary, medicine timetable, Hindi/English patient card'],['Companion','Ranks calls by risk, triages WhatsApp red flags in seconds'],['Insight','Owner dashboard and quarterly summary for insurers'],['Academy','Tracks training, finds NABH documentation gaps']].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join('')}
+      <div class="small muted" style="margin-top:8px">The AI suggests; the registered doctor decides. Brand-neutral, consented, never tied to prescriptions.</div></div></div>
+  </div>`;
+}
+
+/* ---------- module events ---------- */
+document.addEventListener('change', ev=>{
+  const t=ev.target;
+  if(t.dataset.wdoc){ const [id,k]=t.dataset.wdoc.split('|'); const w=WARD.find(x=>x.id===id); w.docs[k]=t.checked; render(); }
+  if(t.dataset.wtask){ const [id,i]=t.dataset.wtask.split('|'); const w=WARD.find(x=>x.id===id); w.tasks[+i].done=t.checked; if(t.checked) state.audit.push({t:nowStamp(),who:'Nurse Anita',what:`${w.bed} ${w.name} · done: ${w.tasks[+i].t}`}); render(); }
+  if(t.dataset.dccons){ state.dcCons[t.dataset.dccons]=t.checked; render(); }
+});
+document.addEventListener('click', ev=>{
+  const el=ev.target.closest('[data-act]'); if(!el) return; const a=el.dataset.act, id=el.dataset.id;
+  if(a==='wnote'){ const w=WARD.find(x=>x.id===id); const n=$('#note-'+id); n.textContent='…'; n.classList.add('show'); setTimeout(()=>{ n.textContent=nursingNote(w); },500); }
+  if(a==='todc'){ state.dcSel=DC[id]?id:state.dcSel; state.view='dc'; render(); }
+  if(a==='pickdc'){ state.dcSel=id; render(); }
+  if(a==='dclang'){ state.dcLang=el.dataset.l; render(); }
+  if(a==='approve'){ state.dcApproved[id]=nowStamp(); const w=WARD.find(x=>x.id===id); state.audit.push({t:nowStamp(),who:w.doctor,what:`${w.name} · discharge summary approved`}); render(); toast('Summary approved by the doctor'); }
+  if(a==='printdc'){ toast('PDF ready to share (simulated)'); }
+  if(a==='enrol'){ const w=WARD.find(x=>x.id===id); state.dcDone[id]=nowStamp(); CP.unshift({id:'N'+id,name:w.name,age:w.age,sex:w.sex,track:DC[id].track.split(':')[0],day:0,lang:DC[id].lang,pdc:100,refill:'Starter pack · 30 days',risk:0,flags:[],thread:[['ai',`नमस्ते ${w.name.split(' ')[0]} जी! ${state.home.name} की CareSetu टीम से। आपकी दवाइयाँ और जाँच की तारीखें यहाँ आएँगी। कोई भी परेशानी हो तो यहीं लिखें।`]]}); state.audit.push({t:nowStamp(),who:'Nurse Anita',what:`${w.name} · enrolled in 90-day Companion with consent (${['care','wa','agg'].filter(k=>state.dcCons[id+k]).join(', ')})`}); render(); toast('Enrolled. Day 3 call scheduled.'); }
+  if(a==='pickcp'){ state.cpSel=id; render(); }
+  if(a==='simsug'){ const p=CP.find(x=>x.id===state.cpSel); triage(p, el.dataset.t); render(); scrollWA(); }
+  if(a==='logcall'){ const p=CP.find(x=>x.id===id); p.flags=p.flags.filter(f=>f.sev!=='crit'||true).map(f=>f); p.thread.push(['ai','📞 Coordinator Priya called: concerns addressed, plan noted.']); state.audit.push({t:nowStamp(),who:'Coordinator Priya',what:`${p.name} · Day ${p.day} call logged`}); render(); scrollWA(); toast('Call logged'); }
+  if(a==='tele'){ const p=CP.find(x=>x.id===id); p.thread.push(['ai','📅 Teleconsult booked with your doctor tomorrow 5 pm. The fee is paid to the nursing home as usual.']); render(); scrollWA(); toast('Teleconsult booked'); }
+  if(a==='refillgo'){ const p=CP.find(x=>x.id===id); p.refill='Reserved at Shree Medicals · pick up today'; p.thread.push(['ai','💊 Your value pack is reserved at Shree Medicals near your home.']); render(); scrollWA(); toast('Refill reserved'); }
+  if(a==='report'){ toast('Outcome report generated (simulated): enrolments, follow-up, readmissions, refills'); }
+});
+document.addEventListener('submit', ev=>{ if(ev.target.id==='waForm'){ ev.preventDefault(); const v=$('#waIn').value.trim(); if(!v) return; const p=CP.find(x=>x.id===state.cpSel); triage(p,v); render(); scrollWA(); } });
+function scrollWA(){ const b=$('#waBody'); if(b) b.scrollTop=b.scrollHeight; }
+
+/* ============ events ============ */
+let tm;
+function recheck(){ state.thinking=true; renderPanel(); clearTimeout(tm); tm=setTimeout(()=>{ state.thinking=false; renderPanel(); refreshStepBadges(); },350); }
+function refreshStepBadges(){ const c=cur(); if(!c) return; const e=evaluate(c);
+  document.querySelectorAll('.step').forEach((b,i)=>{ if(i>=6) return; b.querySelector('.badge')?.remove(); const fl=e.flags.filter(x=>x.step===i&&!x.reviewed); const cr=fl.filter(x=>x.sev==='crit').length,w=fl.filter(x=>x.sev==='warn').length; if(cr||w){ const s=document.createElement('span'); s.className='badge '+(cr?'crit':'warn'); s.textContent=cr||w; b.appendChild(s);} }); }
+function openCase(id){ state.activeId=id; state.view='case'; state.step=0; state.filter='all'; render(); renderSugs(); window.scrollTo(0,0); }
+
+document.addEventListener('input', ev=>{
+  const t=ev.target, c=cur();
+  if(t.dataset.f && c){ set(c,t.dataset.f, t.type==='number'?t.value:t.value); recheck();
+    if(['v.h','v.w','l.creat','p.age'].includes(t.dataset.f) || t.dataset.f==='v.npo'){ /* refresh computed fields without losing focus */
+      const e=evaluate(c); document.querySelectorAll('.computed').forEach((el,i)=>{ const lbl=el.previousElementSibling?.textContent||''; if(/BMI/.test(lbl)) el.textContent=e.bmi?e.bmi.toFixed(1):'—'; if(/eGFR/.test(lbl)) el.textContent=e.egfr?Math.round(e.egfr)+' mL/min/1.73m²':'—'; }); }
+    if(t.dataset.f==='p.name'){ $('#pageTitle').textContent='Pre-admission · '+(c.p.name||'New patient'); }
+  }
+  if(t.dataset.med!==undefined && c){ c.meds[+t.dataset.med][t.dataset.k]=t.value; if(t.dataset.k==='n'){ const r=$('#rec-'+t.dataset.med); if(r) r.innerHTML=recHtml(identify(t.value)); } recheck(); }
+});
+document.addEventListener('change', ev=>{
+  const t=ev.target, c=cur();
+  if(t.dataset.c && c){ set(c,t.dataset.c,t.checked); t.closest('.chk')?.classList.toggle('on',t.checked); recheck(); }
+  if(t.tagName==='SELECT' && t.dataset.f){ recheck(); }
+});
+document.addEventListener('click', ev=>{
+  const el=ev.target.closest('[data-nav],[data-open],[data-act],[data-seg],[data-filter],[data-lang],[data-sug]'); if(!el) return;
+  const c=cur();
+  if(el.dataset.nav){ state.view=el.dataset.nav; render(); renderSugs(); return; }
+  if(el.dataset.open){ openCase(el.dataset.open); return; }
+  if(el.dataset.seg){ set(c,el.dataset.seg,el.dataset.val); if(el.dataset.seg==='a.type'){ if(c.a.type==='medical') c.a.anaes='None'; else if(c.a.anaes==='None') c.a.anaes=c.a.type==='maternity'?'Spinal':'GA'; } $('#stepBody').innerHTML=stepBody(state.step); recheck(); return; }
+  if(el.dataset.filter){ state.filter=el.dataset.filter; renderPanel(); return; }
+  if(el.dataset.lang){ state.lang=el.dataset.lang; $('#stepBody').innerHTML=stepBody(6); return; }
+  if(el.dataset.sug){ ask(el.dataset.sug); return; }
+  const a=el.dataset.act;
+  if(a==='new'){ const n=blankCase(); state.cases.unshift(n); state.audit.push({t:nowStamp(),who:'Front desk',what:`${n.id} · new pre-admission started`}); openCase(n.id); return; }
+  if(a==='go'){ state.step=Math.min(6,+el.dataset.s); render(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(a==='addmed'){ c.meds.push({n:'',d:'',f:''}); c.noMeds=false; $('#stepBody').innerHTML=stepBody(4); const ins=document.querySelectorAll('[data-k="n"]'); ins[ins.length-1]?.focus(); recheck(); return; }
+  if(a==='delmed'){ c.meds.splice(+el.dataset.i,1); $('#stepBody').innerHTML=stepBody(4); recheck(); return; }
+  if(a==='review'){ const fl=evaluate(c).flags.find(x=>x.id===el.dataset.id); state.modalFlag=fl.id; $('#mTitle').textContent=(fl.sev==='crit'?'Critical: ':'')+fl.title; $('#mText').textContent=fl.detail; $('#mReason').value=''; $('#modal').classList.add('open'); setTimeout(()=>$('#mReason').focus(),50); return; }
+  if(a==='mclose'){ $('#modal').classList.remove('open'); return; }
+  if(a==='msave'){ const r=$('#mReason').value.trim(), by=$('#mBy').value.trim(); if(!r||!by){ toast('Add who reviewed it and the decision'); return; } const fl=evaluate(c).flags.find(x=>x.id===state.modalFlag); c.overrides[state.modalFlag]={by,reason:r,at:nowStamp()}; state.audit.push({t:nowStamp(),who:by,what:`${c.id} ${c.p.name} · reviewed "${fl.title}": ${r}`}); $('#modal').classList.remove('open'); render(); toast('Review recorded in the audit trail'); return; }
+  if(a==='sign'){ c.finalized=`${nowStamp()} · ${c.a.doctor||'Doctor'}`; state.audit.push({t:nowStamp(),who:c.a.doctor||'Doctor',what:`${c.id} ${c.p.name} · signed off for admission (checklist ${evaluate(c).score}%)`}); render(); toast('Signed off. Ward and OT notified.'); return; }
+  if(a==='send'){ state.audit.push({t:nowStamp(),who:'Nurse Anita',what:`${c.id} ${c.p.name} · instruction card sent on WhatsApp (${state.lang==='hi'?'Hindi':'English'})`}); toast('Sent on WhatsApp (simulated)'); return; }
+  if(a==='copy'){ navigator.clipboard?.writeText($('#briefTxt').textContent).then(()=>toast('Brief copied'),()=>toast('Copy not available here')); return; }
+});
+$('#fab').onclick=()=>{ $('#chat').classList.add('open'); $('#fab').style.display='none'; renderSugs(); if(!$('#chatBody').children.length) chatAdd('ai',"Namaste! I'm Setu, the CareSetu assistant. I help across the journey: pre-admission checks, ward documentation, discharge packs and the 90-day follow-up.\n\nI support your team; the doctor always decides."); $('#chatIn').focus(); };
+$('#chatClose').onclick=()=>{ $('#chat').classList.remove('open'); $('#fab').style.display=''; };
+$('#chatForm').onsubmit=e=>{ e.preventDefault(); const q=$('#chatIn').value; $('#chatIn').value=''; ask(q); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('#modal').classList.remove('open'); });
+
+
+/* top bar: date, red-flag count, patient search */
+function refreshTopbar(){ const d=new Date(); const dt=$('#tbDate'); if(dt) dt.textContent=d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const b=$('#tbBell'); if(b) b.textContent=CP.reduce((a,x)=>a+x.flags.filter(f=>f.sev==='crit').length,0)+CP.filter(x=>cpRisk(x).level==='High'&&!x.flags.length).length; }
+const _render=render; render=function(){ _render(); refreshTopbar(); };
+document.addEventListener('keydown',e=>{ if(e.target.id!=='tbSearch'||e.key!=='Enter') return; const q=e.target.value.trim().toLowerCase(); if(!q) return;
+  const pre=state.cases.find(c=>(c.p.name+' '+c.p.phone).toLowerCase().includes(q)); if(pre){ openCase(pre.id); return; }
+  const w=WARD.find(x=>(x.name+' '+x.bed).toLowerCase().includes(q)); if(w){ state.view='ward'; render(); return; }
+  const p=CP.find(x=>x.name.toLowerCase().includes(q)); if(p){ state.cpSel=p.id; state.view='cp'; render(); return; }
+  toast('No patient found for “'+e.target.value+'”'); });
+
+demo(); Object.assign(state,{view:'today',dcSel:null,dcLang:'en',dcDone:{},dcApproved:{},dcCons:{},cpSel:null}); render(); renderSugs();
+</script>
+</body>
+</html>
